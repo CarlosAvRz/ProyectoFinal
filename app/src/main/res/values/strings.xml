@@ -87,4 +87,12 @@
     <string name="request_rejected">Rechazar</string>
     <string name="friend_added">Amigo añadido</string>
     <string name="request_erased">Solicitud eliminada</string>
+
+    <!-- Resources for ChatFragment -->
+    <string name="empty_msg">No se puede enviar un mensaje vacío</string>
+    <string name="hint_msg">Mensaje nuevo</string>
+
+    <!-- Resources for MessagesListFragment -->
+    <string name="existing_conversations">Conversaciones</string>
+
 </resources>

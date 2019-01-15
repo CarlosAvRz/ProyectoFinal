@@ -76,12 +76,10 @@ public class PostsFragment extends Fragment {
         postsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("TestApp", String.valueOf(position));
-                Log.i("TestApp", allPosts.toString());
-
                 if (!fullPostsInfo.get(position).get("IDUsuario").equals(IDUser)) {
                     Bundle bundle = new Bundle();
                     bundle.putString("ForeignUserID", fullPostsInfo.get(position).get("IDUsuario").toString());
+                    bundle.putString("ForeignUserName", fullPostsInfo.get(position).get("NombreUsuario").toString());
                     ForeignProfile foreignProfile = new ForeignProfile();
                     foreignProfile.setArguments(bundle);
                     getActivity().getSupportFragmentManager().beginTransaction()

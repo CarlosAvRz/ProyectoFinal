@@ -74,6 +74,7 @@ public class SelfProfile extends Fragment {
         final Button prevEvnButton = rootView.findViewById(R.id.prevEvnButton);
         final Button nextEvButton = rootView.findViewById(R.id.nextEvButton);
         Button friendsProfButton = rootView.findViewById(R.id.friendsProfButton);
+        Button msgProfButton = rootView.findViewById(R.id.msgProfButton);
 
         // Guardar color por defecto del texto e inicializar boton preEvnButton
         final ColorStateList defaultBtnColors = prevEvnButton.getTextColors();
@@ -305,6 +306,18 @@ public class SelfProfile extends Fragment {
                 FriendsListFragment friendsListFragment = new FriendsListFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.placeHolderFrameLayout, friendsListFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        // Boton para llevar a la lista de conversaciones
+        msgProfButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MessagesListFragment messagesListFragment = new MessagesListFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.placeHolderFrameLayout, messagesListFragment)
                         .addToBackStack(null)
                         .commit();
             }

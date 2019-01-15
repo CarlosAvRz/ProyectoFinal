@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.example.chronos.finalproject.MainMenu.IDUser;
 import static com.example.chronos.finalproject.MainMenu.FullNameUser;
@@ -140,7 +142,7 @@ public class FriendsListFragment extends Fragment {
                         .setPositiveButton(getString(R.string.request_accepted), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // Agregar amigo a la lista del usuario y del amigo aceptado y TODO borrar solicitud
+                                // Agregar amigo a la lista del usuario y del amigo aceptado y borrar solicitud pendiente
                                 DatabaseReference newFriendRef = FirebaseDatabase.getInstance().getReference("Amigos/" + IDUser + "/" + requestersKeys.get(position));
                                 newFriendRef.setValue(requestsList.get(position).get("Request"));
                                 DatabaseReference forFriendRef = FirebaseDatabase.getInstance().getReference("Amigos/" + requestersKeys.get(position) + "/" + IDUser);
@@ -179,6 +181,51 @@ public class FriendsListFragment extends Fragment {
             public void onClick(View v) {
                 requestsListView.setVisibility(View.VISIBLE);
                 friendsListView.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        // Click en item de la lista de amigos para poder conversar con ese amigo
+        friendsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                // Buscar conversacion existente o crear un nodo nuevo para "Conversacion" y actualizar tambien nodos de "Usuarios-Conversaciones"
+                final String foreignUserID = friendsKeys.get(position);
+                final String foreignUserName = friendsList.get(position).get("Friend");
+                DatabaseReference conversationRef = FirebaseDatabase.getInstance().getReference("Usuarios-Conversaciones/" + IDUser + "/" + foreignUserID);
+                conversationRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String conversationKey;
+                        if (dataSnapshot.getValue() == null) {
+                            DatabaseReference newConversationRef = FirebaseDatabase.getInstance().getReference();
+                            conversationKey = newConversationRef.push().getKey();
+                            Map<String, Object> conversationValues = new HashMap<>();
+                            conversationValues.put("Conversaciones/" + conversationKey + "/IDUsuario1", IDUser);
+                            conversationValues.put("Conversaciones/" + conversationKey + "/IDUsuario2", foreignUserID);
+                            conversationValues.put("Usuarios-Conversaciones/" + IDUser + "/" + foreignUserID, conversationKey);
+                            conversationValues.put("Usuarios-Conversaciones/" + foreignUserID + "/" + IDUser, conversationKey);
+                            newConversationRef.updateChildren(conversationValues);
+                        } else {
+                            conversationKey = dataSnapshot.getValue().toString();
+                        }
+                        // Iniciar conversacion
+                        Bundle bundle = new Bundle();
+                        bundle.putString("foreignUserID", foreignUserID);
+                        bundle.putString("foreignUserName", foreignUserName);
+                        bundle.putString("conversationKey", conversationKey);
+                        ChatFragment chatFragment = new ChatFragment();
+                        chatFragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.placeHolderFrameLayout, chatFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 

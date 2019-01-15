@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +37,8 @@ import static com.example.chronos.finalproject.MainMenu.FullNameUser;
 
 public class ForeignProfile extends Fragment {
 
+    String conversationKey;
+
     public Bitmap stringToBitMap(String encodedString) {
         try {
             byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
@@ -57,6 +58,7 @@ public class ForeignProfile extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // obtener argumentos del post, pasados desde PostsFragment y toda la informacion del usuario
         final String foreignUserID = getArguments().getString("ForeignUserID");
+        final String foreignUserName = getArguments().getString("ForeignUserName");
 
         // Inicializar vista y elementos
         View rootView = inflater.inflate(R.layout.fragment_foreign_profile, container, false);
@@ -270,6 +272,48 @@ public class ForeignProfile extends Fragment {
                             Toast.makeText(getContext(), getString(R.string.sent_request), Toast.LENGTH_SHORT).show();
                         }
                         friendReq.setValue(foreignUserReq);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
+        // Boton para conversar si es amigo
+        msgForButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Buscar conversacion existente o crear un nodo nuevo para "Conversacion" y actualizar tambien nodos de "Usuarios-Conversaciones"
+                DatabaseReference conversationRef = FirebaseDatabase.getInstance().getReference("Usuarios-Conversaciones/" + IDUser + "/" + foreignUserID);
+                conversationRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() == null) {
+                            DatabaseReference newConversationRef = FirebaseDatabase.getInstance().getReference();
+                            conversationKey = newConversationRef.push().getKey();
+                            Map<String, Object> conversationValues = new HashMap<>();
+                            conversationValues.put("Conversaciones/" + conversationKey + "/IDUsuario1", IDUser);
+                            conversationValues.put("Conversaciones/" + conversationKey + "/IDUsuario2", foreignUserID);
+                            conversationValues.put("Usuarios-Conversaciones/" + IDUser + "/" + foreignUserID, conversationKey);
+                            conversationValues.put("Usuarios-Conversaciones/" + foreignUserID + "/" + IDUser, conversationKey);
+                            newConversationRef.updateChildren(conversationValues);
+                        } else {
+                            conversationKey = dataSnapshot.getValue().toString();
+                        }
+                        // Iniciar conversacion
+                        Bundle bundle = new Bundle();
+                        bundle.putString("foreignUserID", foreignUserID);
+                        bundle.putString("foreignUserName", foreignUserName);
+                        bundle.putString("conversationKey", conversationKey);
+                        ChatFragment chatFragment = new ChatFragment();
+                        chatFragment.setArguments(bundle);
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.placeHolderFrameLayout, chatFragment)
+                                .addToBackStack(null)
+                                .commit();
                     }
 
                     @Override
