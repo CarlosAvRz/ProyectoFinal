@@ -1,21 +1,33 @@
 package com.example.chronos.finalproject;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,10 +77,19 @@ public class ForeignProfile extends Fragment {
         final TextView forNameTextView = rootView.findViewById(R.id.forNameTextView);
         final TextView forAgeTextView = rootView.findViewById(R.id.forAgeTextView);
         final ImageView forPicImageView = rootView.findViewById(R.id.forPicImageView);
+        final ImageView reportImageView = rootView.findViewById(R.id.reportImageView);
         final Button forPrevEvButton = rootView.findViewById(R.id.forPrevEvButton);
         final Button forNextEvButton = rootView.findViewById(R.id.forNextEvButton);
         final Button reqFriendsButton = rootView.findViewById(R.id.reqFriendButton);
         final Button msgForButton = rootView.findViewById(R.id.msgForButton);
+
+        // Inicializar la vista para las ventanas popup para reportes
+        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View reportView = layoutInflater.inflate(R.layout.popup_report, null);
+        final Spinner reportTypeSpinner = reportView.findViewById(R.id.reportTypeSpinner);
+        final EditText reportContentEditText = reportView.findViewById(R.id.reportContentEditText);
+        final Button sendReportButton = reportView.findViewById(R.id.sendReportButton);
+        final PopupWindow popupWindow = new PopupWindow(reportView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         // Guardar color por defecto del texto e inicializar boton preEvnButton
         final ColorStateList defaultBtnColors = forPrevEvButton.getTextColors();
@@ -96,6 +117,10 @@ public class ForeignProfile extends Fragment {
                 new String[]{"EventName","EventDate"},
                 new int[]{R.id.userEventNameTextView,R.id.userEventDateTextView});
         forNextEvListView.setAdapter(nextEvListAdapter);
+
+        // Inicializar spinner con opciones de reporte
+        String [] reportType = {"Contenido sexual", "Contenido violento", "Spam", "Lenguaje ofensivo"};
+        reportTypeSpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, reportType));
 
         // Obtener edad y nombre
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Usuarios/" + foreignUserID);
@@ -229,7 +254,7 @@ public class ForeignProfile extends Fragment {
             }
         });
 
-        // botones para cambiar listas
+        // Botones para cambiar listas
         forPrevEvButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -321,6 +346,69 @@ public class ForeignProfile extends Fragment {
 
                     }
                 });
+            }
+        });
+
+        // cambiar color de texto para elemento seleccionado del spinner
+        reportTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView) parent.getChildAt(0)).setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        // levantar reporte, mandar solo si hay contenido
+        reportImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reportContentEditText.setText("");
+                reportTypeSpinner.setSelection(0);
+                sendReportButton.setEnabled(false);
+                popupWindow.setAnimationStyle(R.style.popup_window_animation);
+                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.DKGRAY));
+                popupWindow.setFocusable(true);
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
+            }
+        });
+        reportContentEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals("")) {
+                    sendReportButton.setEnabled(true);
+                } else {
+                    sendReportButton.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        sendReportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                DatabaseReference reportRef = FirebaseDatabase.getInstance().getReference("Reportes");
+                String key = reportRef.push().getKey();
+                HashMap<String, Object> newReport = new HashMap<>();
+                newReport.put(key + "/IDUsuario", IDUser);
+                newReport.put(key + "/IDReportado", foreignUserID);
+                newReport.put(key + "/Tipo", reportTypeSpinner.getSelectedItem());
+                newReport.put(key + "/Contenido", reportContentEditText.getText().toString());
+                reportRef.updateChildren(newReport);
+                Toast.makeText(getContext(), getString(R.string.report_sent), Toast.LENGTH_SHORT).show();
             }
         });
 

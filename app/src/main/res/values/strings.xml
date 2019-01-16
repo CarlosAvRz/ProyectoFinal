@@ -99,4 +99,12 @@
     <string name="cancel_op">Cancelar modificacion</string>
     <string name="cancel_op_detail">¿Desea olvidar las modificaciones y volver a la pantalla de su perfil?</string>
     <string name="values_updated">Información actualizada</string>
+
+    <!-- Resources for popup_report.xml -->
+    <string name="report_popup_title">Reportar usuario</string>
+    <string name="report_popup_options">Tipo de reporte</string>
+    <string name="report_content">Razón de reporte</string>
+    <string name="report_popup_button">Enviar</string>
+    <string name="report_sent">Reporte enviado</string>
+
 </resources>
