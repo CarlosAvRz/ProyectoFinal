@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_new_events"
+        android:icon="@drawable/marker_icon_96"
+        android:title="@string/title_admin_events" />
+
+    <item
+        android:id="@+id/navigation_show_reports"
+        android:icon="@drawable/alert_icon_96"
+        android:title="@string/title_admin_reports" />
+
+</menu>

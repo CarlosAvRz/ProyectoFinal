@@ -25,19 +25,18 @@
         <activity android:name=".LogInActivity" />
         <activity
             android:name=".MainMenu"
-            android:label="@string/title_activity_main_menu"></activity>
+            android:label="@string/title_activity_main_menu" />
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCvLktp7od2AMDiHTit_XrfUEc0Cdt5gRw"/>
+            android:value="AIzaSyCvLktp7od2AMDiHTit_XrfUEc0Cdt5gRw" />
 
+        <activity
+            android:name=".AdminMainMenu"
+            android:label="@string/title_activity_admin_main_menu"></activity>
     </application>
-
-
-
-
 
 </manifest>

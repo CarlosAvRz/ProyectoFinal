@@ -47,9 +47,9 @@
 
     <!-- Resources for MainMenu -->
     <string name="title_activity_main_menu">MainMenu</string>
-    <string name="title_home">Eventos</string>
-    <string name="title_dashboard">Publicaciones</string>
-    <string name="title_notifications">Perfil</string>
+    <string name="title_events">Eventos</string>
+    <string name="title_posts">Publicaciones</string>
+    <string name="title_self_profile">Perfil</string>
 
     <!-- Resources for popup_details_event.xml and fragment_event_details.xml -->
     <string name="details_button">Ver más</string>
@@ -106,5 +106,31 @@
     <string name="report_content">Razón de reporte</string>
     <string name="report_popup_button">Enviar</string>
     <string name="report_sent">Reporte enviado</string>
+
+    <!-- Resources for fragment_admin_event_list.xml -->
+    <string name="list_edit_ev_button">Editar</string>
+    <string name="list_erase_ev_button">Eliminar</string>
+    <string name="list_create_event">Nuevo evento</string>
+    <string name="events_list_title">Eventos creados</string>
+
+    <!-- Resources for AdminMainMenu -->
+    <string name="title_activity_admin_main_menu">AdminMainMenu</string>
+    <string name="title_admin_events">Eventos</string>
+    <string name="title_admin_reports">Reportes</string>
+
+    <!-- Resources for fragment_reports_admin.xml -->
+    <string name="report_admin_title">Reportes pendiente</string>
+    <string name="offender_user">Usuario reportado:</string>
+    <string name="offended_user">De:</string>
+
+    <!-- Resources for fragment_create_event1st.xml -->
+    <string name="ev_name_edit">Nombre del evento</string>
+    <string name="quota_edit">Cupo</string>
+    <string name="hour_text">Hora</string>
+    <string name="minute_text">Minuto</string>
+
+    <!-- Resources for fragment_location_event.xml -->
+    <string name="address_text">Dirección aproximada de la ubicación</string>
+    <string name="location_error">Por favor toca el mapa para seleccionar una ubicación</string>
 
 </resources>

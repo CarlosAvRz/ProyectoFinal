@@ -27,6 +27,7 @@ public class LogInActivity extends AppCompatActivity {
     public void logInAccount(View view) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Usuarios");
         final boolean[] userMatches = {false};
+        final String[] userRole = new String[1];
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -39,13 +40,21 @@ public class LogInActivity extends AppCompatActivity {
                             userMatches[0] = true;
                             IDUser = data.getKey();
                             FullNameUser = userValues.get("Nombre").toString() + " " + userValues.get("ApellidoPat").toString() + " " + userValues.get("ApellidoMat").toString();
+                            userRole[0] = (String) userValues.get("Rol");
                         }
                     }
                     if (userMatches[0]) {
-                        Intent intent = new Intent(getApplicationContext(), MainMenu.class);
-                        intent.putExtra("IDUser", IDUser);
-                        intent.putExtra("FullNameUser", FullNameUser);
-                        startActivity(intent);
+                        if (userRole[0].equals("Usuario")) {
+                            Intent intent = new Intent(getApplicationContext(), MainMenu.class);
+                            intent.putExtra("IDUser", IDUser);
+                            intent.putExtra("FullNameUser", FullNameUser);
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), AdminMainMenu.class);
+                            intent.putExtra("IDUser", IDUser);
+                            intent.putExtra("FullNameUser", FullNameUser);
+                            startActivity(intent);
+                        }
                     } else {
                         new AlertDialog.Builder(LogInActivity.this)
                                 .setIcon(android.R.drawable.ic_dialog_alert)
