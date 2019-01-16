@@ -95,4 +95,8 @@
     <!-- Resources for MessagesListFragment -->
     <string name="existing_conversations">Conversaciones</string>
 
+    <!-- Resources for EditProfile2ndFragment -->
+    <string name="cancel_op">Cancelar modificacion</string>
+    <string name="cancel_op_detail">¿Desea olvidar las modificaciones y volver a la pantalla de su perfil?</string>
+    <string name="values_updated">Información actualizada</string>
 </resources>

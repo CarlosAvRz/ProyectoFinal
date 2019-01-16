@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -75,6 +76,7 @@ public class SelfProfile extends Fragment {
         final Button nextEvButton = rootView.findViewById(R.id.nextEvButton);
         Button friendsProfButton = rootView.findViewById(R.id.friendsProfButton);
         Button msgProfButton = rootView.findViewById(R.id.msgProfButton);
+        ImageView editProfImageView = rootView.findViewById(R.id.editProfImageView);
 
         // Guardar color por defecto del texto e inicializar boton preEvnButton
         final ColorStateList defaultBtnColors = prevEvnButton.getTextColors();
@@ -318,6 +320,18 @@ public class SelfProfile extends Fragment {
                 MessagesListFragment messagesListFragment = new MessagesListFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.placeHolderFrameLayout, messagesListFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        // Click en la imagen para editar perfil
+        editProfImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditProfile1stFragment editProfile1stFragment = new EditProfile1stFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.placeHolderFrameLayout, editProfile1stFragment)
                         .addToBackStack(null)
                         .commit();
             }

@@ -54,13 +54,13 @@ public class PostsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChildren()) {
-                    for (DataSnapshot data: dataSnapshot.getChildren()) {
+                    for (final DataSnapshot data: dataSnapshot.getChildren()) {
                         HashMap<String, Object> singlePost = (HashMap<String, Object>) data.getValue();
-                        fullPostsInfo.add(0, singlePost);
-                        HashMap<String, String> listPost = new HashMap<>();
+                        final HashMap<String, String> listPost = new HashMap<>();
                         listPost.put("UserName", singlePost.get("NombreUsuario").toString());
                         listPost.put("EventName", singlePost.get("NombreEvento").toString());
                         listPost.put("Content", singlePost.get("Contenido").toString());
+                        fullPostsInfo.add(0, singlePost);
                         allPosts.add(0, listPost);
                         ((SimpleAdapter) postsListAdapter).notifyDataSetChanged();
                     }
@@ -79,7 +79,7 @@ public class PostsFragment extends Fragment {
                 if (!fullPostsInfo.get(position).get("IDUsuario").equals(IDUser)) {
                     Bundle bundle = new Bundle();
                     bundle.putString("ForeignUserID", fullPostsInfo.get(position).get("IDUsuario").toString());
-                    bundle.putString("ForeignUserName", fullPostsInfo.get(position).get("NombreUsuario").toString());
+                    bundle.putString("ForeignUserName", allPosts.get(position).get("UserName"));
                     ForeignProfile foreignProfile = new ForeignProfile();
                     foreignProfile.setArguments(bundle);
                     getActivity().getSupportFragmentManager().beginTransaction()

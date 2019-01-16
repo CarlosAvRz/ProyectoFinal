@@ -37,7 +37,7 @@ public class LogInActivity extends AppCompatActivity {
                         String userPassword = userValues.get("Contrasenia").toString();
                         if (userEmail.equals(emailEditText.getText().toString()) && userPassword.equals(passwordEditText.getText().toString())) {
                             userMatches[0] = true;
-                            IDUser = userValues.get("Nombre").toString() + userValues.get("ApellidoPat").toString() + userValues.get("ApellidoMat").toString();
+                            IDUser = data.getKey();
                             FullNameUser = userValues.get("Nombre").toString() + " " + userValues.get("ApellidoPat").toString() + " " + userValues.get("ApellidoMat").toString();
                         }
                     }
