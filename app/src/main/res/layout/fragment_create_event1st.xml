@@ -130,7 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/hour_text"
+                android:text="@string/init_hour_text"
                 android:textAlignment="center" />
 
             <Spinner
@@ -151,7 +151,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/minute_text"
+                android:text="@string/end_hour_text"
                 android:textAlignment="center" />
 
             <Spinner

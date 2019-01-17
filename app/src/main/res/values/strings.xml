@@ -126,10 +126,13 @@
     <!-- Resources for fragment_create_event1st.xml -->
     <string name="ev_name_edit">Nombre del evento</string>
     <string name="quota_edit">Cupo</string>
-    <string name="hour_text">Hora</string>
-    <string name="minute_text">Minuto</string>
+    <string name="init_hour_text">Hora Inicial</string>
+    <string name="end_hour_text">Hora Final</string>
+    <string name="event_with_users">¡Este evento ya tiene participantes!</string>
+    <string name="erase_event_confirm">Eliminar evento</string>
+    <string name="erase_event_detail">¿Está seguro que desea eliminar el evento seleccionado? Una vez que sea eliminado no podrá recuperarlo</string>
 
-    <!-- Resources for fragment_location_event.xml -->
+    <!-- Resources for fragment_create_event2ndd.xml -->
     <string name="address_text">Dirección aproximada de la ubicación</string>
     <string name="location_error">Por favor toca el mapa para seleccionar una ubicación</string>
 

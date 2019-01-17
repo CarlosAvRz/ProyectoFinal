@@ -30,21 +30,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class LocationEventFragment extends Fragment {
+public class CreateEvent2ndFragment extends Fragment {
 
     MapView mMapView;
     private GoogleMap googleMap;
-    LatLng singleLatLng;
-    String address;
+    //LatLng singleLatLng;
+    //String address;
+    HashMap<String, Object> eventToEdit;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_location_event, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_create_event2nd, container, false);
         final TextView addressTextView = rootView.findViewById(R.id.addressTextView);
         mMapView = rootView.findViewById(R.id.mapView3);
         mMapView.onCreate(savedInstanceState);
         final Button evFinishButton = rootView.findViewById(R.id.evFinishButton);
+
+        // Recuperar valores de la actividad anterior
+        eventToEdit = (HashMap<String, Object>) getArguments().getSerializable("ValoresEvento");
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -67,6 +71,20 @@ public class LocationEventFragment extends Fragment {
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(17.0436248,-96.7119411)).zoom(13).build();
                 googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
+                // Intenta colocar marcador previo y mostrar direccion previa (si viene de edicion en lugar de creacion) y activar el boton
+                try {
+                    double latitude = (double) eventToEdit.get("Latitud");
+                    double longitude = (double) eventToEdit.get("Longitud");;
+                    LatLng previousLatLng = new LatLng(latitude, longitude);
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(previousLatLng)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                    String previousAddress = (String) eventToEdit.get("Direccion");
+                    addressTextView.setText(previousAddress);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 // click largo para poner marcador
                 mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                     @Override
@@ -76,14 +94,16 @@ public class LocationEventFragment extends Fragment {
                         googleMap.addMarker(new MarkerOptions()
                                 .position(latLng)
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
-                        singleLatLng = latLng;
+                        eventToEdit.put("Latitud", latLng.latitude);
+                        eventToEdit.put("Longitud", latLng.longitude);
 
                         // Mostrar direccion
                         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
                         try {
                             List<Address> markerInfo = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                            address = markerInfo.get(0).getAddressLine(0);
-                            addressTextView.setText(address);
+                            String newAddress = markerInfo.get(0).getAddressLine(0);
+                            addressTextView.setText(newAddress);
+                            eventToEdit.put("Direccion", newAddress);
 
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -91,27 +111,19 @@ public class LocationEventFragment extends Fragment {
 
                     }
                 });
-
-                evFinishButton.setEnabled(true);
             }
         });
 
         evFinishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (singleLatLng != null) {
+                if (eventToEdit.containsKey("Latitud") && eventToEdit.containsKey("Longitud") && eventToEdit.containsKey("Direccion")) {
                     Bundle bundle = new Bundle();
-                    HashMap<String, Object> eventValues = (HashMap<String, Object>) getArguments().getSerializable("ValoresEvento");
-                    eventValues.put("Latitud", singleLatLng.latitude);
-                    eventValues.put("Longitud", singleLatLng.longitude);
-                    eventValues.put("Direccion", address);
-                    eventValues.put("Cancelado", false);
-                    bundle.putSerializable("ValoresEvento", eventValues);
-                    SelectImageEvent selectImageEvent = new SelectImageEvent();
-                    Log.i("TestApp", eventValues.toString());
-                    selectImageEvent.setArguments(bundle);
+                    bundle.putSerializable("ValoresEvento", eventToEdit);
+                    CreateEvent3rdFragment createEvent3rdFragment = new CreateEvent3rdFragment();
+                    createEvent3rdFragment.setArguments(bundle);
                     getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.adminPlaceholder, selectImageEvent)
+                            .replace(R.id.adminPlaceholder, createEvent3rdFragment)
                             .addToBackStack(null)
                             .commit();
                 } else {

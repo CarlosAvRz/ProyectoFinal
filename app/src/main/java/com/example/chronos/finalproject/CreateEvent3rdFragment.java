@@ -30,9 +30,9 @@ import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
-public class SelectImageEvent extends Fragment {
+public class CreateEvent3rdFragment extends Fragment {
 
-    Bitmap profilePic, prevProfPic;
+    Bitmap eventPic;
     ImageView edImageView;
 
     // Resultado de permisos para subir foto de perfil, en caso de negarse mostrar mensaje
@@ -60,8 +60,8 @@ public class SelectImageEvent extends Fragment {
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
             try {
-                profilePic = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImage);
-                edImageView.setImageBitmap(profilePic);
+                eventPic = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImage);
+                edImageView.setImageBitmap(eventPic);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -89,16 +89,16 @@ public class SelectImageEvent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_select_image_event, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_create_event3rd, container, false);
 
         edImageView = rootView.findViewById(R.id.evImageView);
-        ;
-        Button edSelectProfilePicButton = rootView.findViewById(R.id.selectEvPicButton);
-        Button edCancelButton = rootView.findViewById(R.id.evCancelButton);
-        Button edFinishRegButton = rootView.findViewById(R.id.finishCreationButton);
+
+        Button selectEvPicButton = rootView.findViewById(R.id.selectEvPicButton);
+        Button evCancelButton = rootView.findViewById(R.id.evCancelButton);
+        Button finishCreationButton = rootView.findViewById(R.id.finishCreationButton);
 
         // Funcion para el boton de seleccionar, al intentar subir una foto revisar permiso de lectura, si no hay pedirlos, si hay ejecutar metodo getPhoto()
-        edSelectProfilePicButton.setOnClickListener(new View.OnClickListener() {
+        selectEvPicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (getContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -110,7 +110,7 @@ public class SelectImageEvent extends Fragment {
         });
 
         // Cancelar registro y volver a login preguntando en un display alert
-        edCancelButton.setOnClickListener(new View.OnClickListener() {
+        evCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(getContext())
@@ -132,31 +132,40 @@ public class SelectImageEvent extends Fragment {
             }
         });
 
-        // Actualizar informacion de perfil y todos los posts de ese usuario
-        edFinishRegButton.setOnClickListener(new View.OnClickListener() {
+        // Actualizar informacion
+        finishCreationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (profilePic == null) {
-                    profilePic = BitmapFactory.decodeResource(getResources(), R.drawable.default_profile_picture);
-                }
-
+                // Actualizar informacion en la base o crear nuevo evento
                 DatabaseReference newEventRef = FirebaseDatabase.getInstance().getReference("Eventos/");
-                String key = newEventRef.push().getKey();
-                HashMap<String, Object> eventValues = (HashMap<String, Object>) getArguments().getSerializable("ValoresEvento");
+                HashMap<String, Object> eventToEdit = (HashMap<String, Object>) getArguments().getSerializable("ValoresEvento");
+                String key;
+                if (eventToEdit.containsKey("IDEvento")) {
+                    key = (String) eventToEdit.get("IDEvento");
+                } else {
+                    key = newEventRef.push().getKey();
+                }
                 Map<String, Object> newEvent = new HashMap<>();
-                newEvent.put(key + "/Nombre", eventValues.get("Nombre"));
-                newEvent.put(key + "/NombreEncargado", eventValues.get("NombreEncargado"));
-                newEvent.put(key + "/Latitud", eventValues.get("Latitud"));
-                newEvent.put(key + "/Longitud", eventValues.get("Longitud"));
-                newEvent.put(key + "/DiaEvento", eventValues.get("DiaEvento"));
-                newEvent.put(key + "/MesEvento", eventValues.get("MesEvento"));
-                newEvent.put(key + "/AnioEvento", eventValues.get("AnioEvento"));
-                newEvent.put(key + "/HoraInicial",eventValues.get("HoraInicial") );
-                newEvent.put(key + "/HoraFinal",eventValues.get("HoraFinal") );
-                newEvent.put(key + "/Cupo", eventValues.get("Cupo"));
-                newEvent.put(key + "/Direccion", eventValues.get("Direccion"));
-                newEvent.put(key + "/Cancelado", eventValues.get("Cancelado"));
+                newEvent.put(key + "/Nombre", eventToEdit.get("Nombre"));
+                newEvent.put(key + "/NombreEncargado", eventToEdit.get("NombreEncargado"));
+                newEvent.put(key + "/Latitud", eventToEdit.get("Latitud"));
+                newEvent.put(key + "/Longitud", eventToEdit.get("Longitud"));
+                newEvent.put(key + "/DiaEvento", eventToEdit.get("DiaEvento"));
+                newEvent.put(key + "/MesEvento", eventToEdit.get("MesEvento"));
+                newEvent.put(key + "/AnioEvento", eventToEdit.get("AnioEvento"));
+                newEvent.put(key + "/HoraInicial",eventToEdit.get("HoraInicial") );
+                newEvent.put(key + "/HoraFinal",eventToEdit.get("HoraFinal") );
+                newEvent.put(key + "/Cupo", eventToEdit.get("Cupo"));
+                newEvent.put(key + "/Direccion", eventToEdit.get("Direccion"));
+                newEvent.put(key + "/Cancelado", false);
                 newEventRef.updateChildren(newEvent);
+
+                // Subir foto de evento o reemplazarla
+                if (eventPic == null) {
+                    eventPic = BitmapFactory.decodeResource(getResources(), R.drawable.default_profile_picture);
+                }
+                DatabaseReference evPicRef = FirebaseDatabase.getInstance().getReference("Eventos-Fotos/" + key);
+                evPicRef.setValue(bitMapToString(eventPic));
 
                 AdminEventsListFragment adminEventsListFragment = new AdminEventsListFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()

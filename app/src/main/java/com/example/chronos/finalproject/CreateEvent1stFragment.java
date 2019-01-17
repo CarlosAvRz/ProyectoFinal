@@ -3,6 +3,7 @@ package com.example.chronos.finalproject;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 import static java.util.Arrays.asList;
 
@@ -23,6 +25,7 @@ import static com.example.chronos.finalproject.AdminMainMenu.IDUser;
 public class CreateEvent1stFragment extends Fragment {
 
     Spinner evDaySpinner, evMonthSpinner, evYearSpinner;
+    HashMap<String, Object> eventToEdit;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,28 +42,30 @@ public class CreateEvent1stFragment extends Fragment {
         final Spinner evDaySpinner = rootView.findViewById(R.id.evDaySpinner);
         final Spinner evMonthSpinner = rootView.findViewById(R.id.evMonthSpinner);
         final Spinner evYearSpinner = rootView.findViewById(R.id.evYearSpinner);
-        final Spinner evHourSpinner = rootView.findViewById(R.id.evHourSpinner);
-        final Spinner evMinuteSpinner = rootView.findViewById(R.id.evMinuteSpinner);
+        final Spinner evInitHourSpinner = rootView.findViewById(R.id.evHourSpinner);
+        final Spinner evEndHourSpinner = rootView.findViewById(R.id.evMinuteSpinner);
 
         Button evNextButton = rootView.findViewById(R.id.evNextButton);
 
         // Inicializar listas de numeros para poder mostrarlos en los spinner
         Integer[] dayNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
         Integer[] monthNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
-        Integer[] yearNumbers = new Integer[39];
-        for (int i = 0, year = 1980; i < yearNumbers.length; i++, year++) {
-            yearNumbers[i] = year;
-        }
+        Integer[] yearNumbers = {2018, 2019};
         Integer[] hourNumbers = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
-        Integer[] minuteNumbers = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
-                31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59};
 
         // Unir las listas de numeros a los spinner
-        evDaySpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, dayNumbers));
-        evMonthSpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, monthNumbers));
-        evYearSpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, yearNumbers));
-        evHourSpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, hourNumbers));
-        evMinuteSpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, minuteNumbers));
+        ArrayAdapter<Integer> evDayArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, dayNumbers);
+        evDaySpinner.setAdapter(evDayArrayAdapter);
+
+        ArrayAdapter<Integer> evMonthArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, monthNumbers);
+        evMonthSpinner.setAdapter(evMonthArrayAdapter);
+
+        ArrayAdapter<Integer> evYearArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, yearNumbers);
+        evYearSpinner.setAdapter(evYearArrayAdapter);
+
+        ArrayAdapter<Integer> evHourArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, hourNumbers);
+        evInitHourSpinner.setAdapter(evHourArrayAdapter);
+        evEndHourSpinner.setAdapter(evHourArrayAdapter);
 
         // Spinners (solo OnItemSelected)
         Spinner.OnItemSelectedListener spinnerOnItemSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -104,6 +109,26 @@ public class CreateEvent1stFragment extends Fragment {
         evMonthSpinner.setOnItemSelectedListener(spinnerOnItemSelectedListener);
         evYearSpinner.setOnItemSelectedListener(spinnerOnItemSelectedListener);
 
+        // Revisar si se esta editando un mapa, de lo contrario generar uno nuevo para pasarlo a la siguiente actividad
+        try {
+            eventToEdit = (HashMap<String, Object>) getArguments().getSerializable("EditEvent");
+            evNameEditText.setText(eventToEdit.get("Nombre").toString());
+            evQuotaEditText.setText(eventToEdit.get("Cupo").toString());
+
+            Integer eventDay = Integer.valueOf(eventToEdit.get("DiaEvento").toString());
+            Integer eventMonth = Integer.valueOf(eventToEdit.get("MesEvento").toString());
+            Integer eventYear = Integer.valueOf(eventToEdit.get("AnioEvento").toString());
+            Integer eventInitHour = Integer.valueOf(eventToEdit.get("HoraInicial").toString());
+            Integer eventEndHour = Integer.valueOf(eventToEdit.get("HoraFinal").toString());
+            evDaySpinner.setSelection(evDayArrayAdapter.getPosition(eventDay));
+            evMonthSpinner.setSelection(evMonthArrayAdapter.getPosition(eventMonth));
+            evYearSpinner.setSelection(evYearArrayAdapter.getPosition(eventYear));
+            evInitHourSpinner.setSelection(evHourArrayAdapter.getPosition(eventInitHour));
+            evEndHourSpinner.setSelection(evHourArrayAdapter.getPosition(eventEndHour));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // Funcion para revisar campos y pasar a la siguiente pantalla de informacion
         evNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,24 +140,26 @@ public class CreateEvent1stFragment extends Fragment {
                 eventDay = evDaySpinner.getSelectedItem().toString();
                 eventMonth = evMonthSpinner.getSelectedItem().toString();
                 eventYear = evYearSpinner.getSelectedItem().toString();
-                eventHour = evHourSpinner.getSelectedItem().toString();
-                eventMin = evMinuteSpinner.getSelectedItem().toString();
+                eventHour = evInitHourSpinner.getSelectedItem().toString();
+                eventMin = evEndHourSpinner.getSelectedItem().toString();
                 if (!eventName.equals("") && !eventOrg.equals("") && !eventQuota.equals("") && evValidDataTextView.getText().toString().equals("")) {
                     Bundle bundle = new Bundle();
-                    HashMap<String, Object> newEvent = new HashMap<>();
-                    newEvent.put("Nombre", eventName);
-                    newEvent.put("NombreEncargado", eventOrg);
-                    newEvent.put("Cupo", eventQuota);
-                    newEvent.put("DiaEvento", eventDay);
-                    newEvent.put("MesEvento", eventMonth);
-                    newEvent.put("AnioEvento", eventYear);
-                    newEvent.put("HoraInicial", eventHour);
-                    newEvent.put("HoraFinal", eventMin);
-                    bundle.putSerializable("ValoresEvento", newEvent);
-                    LocationEventFragment locationEventFragment = new LocationEventFragment();
-                    locationEventFragment.setArguments(bundle);
+                    if (eventToEdit == null) {
+                        eventToEdit = new HashMap<>();
+                    }
+                    eventToEdit.put("Nombre", eventName);
+                    eventToEdit.put("NombreEncargado", eventOrg);
+                    eventToEdit.put("Cupo", eventQuota);
+                    eventToEdit.put("DiaEvento", eventDay);
+                    eventToEdit.put("MesEvento", eventMonth);
+                    eventToEdit.put("AnioEvento", eventYear);
+                    eventToEdit.put("HoraInicial", eventHour);
+                    eventToEdit.put("HoraFinal", eventMin);
+                    bundle.putSerializable("ValoresEvento", eventToEdit);
+                    CreateEvent2ndFragment createEvent2ndFragment = new CreateEvent2ndFragment();
+                    createEvent2ndFragment.setArguments(bundle);
                     getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.adminPlaceholder, locationEventFragment)
+                            .replace(R.id.adminPlaceholder, createEvent2ndFragment)
                             .addToBackStack(null)
                             .commit();
                 } else {
@@ -145,7 +172,6 @@ public class CreateEvent1stFragment extends Fragment {
                 }
             }
         });
-
 
         return rootView;
     }

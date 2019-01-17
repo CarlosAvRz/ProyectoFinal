@@ -1,8 +1,10 @@
 package com.example.chronos.finalproject;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,12 @@ import java.util.HashMap;
 
 import static com.example.chronos.finalproject.AdminMainMenu.IDUser;
 
-public class AdminEventsListFragment extends Fragment {
+public class AdminEventsListFragment extends Fragment
+        implements EditEventsAdapter.EditEventListener, EditEventsAdapter.EraseEventListener {
+
+    ArrayList<String> eventsNameList = new ArrayList<>();
+    ArrayList<HashMap<String, Object>> fullInfoEvents = new ArrayList<>();
+    EditEventsAdapter editEventsAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,8 +37,7 @@ public class AdminEventsListFragment extends Fragment {
         Button createEvent = rootView.findViewById(R.id.createEventButton);
 
         // Inicializar arreglos para listView
-        final ArrayList<String> eventsNameList = new ArrayList<>();
-        final EditEventsAdapter editEventsAdapter = new EditEventsAdapter(eventsNameList, getContext());
+        editEventsAdapter = new EditEventsAdapter(eventsNameList, fullInfoEvents, getContext(), this, this);
         editEventsListView.setAdapter(editEventsAdapter);
 
         // Buscar eventos creados por el usuario administrador
@@ -42,8 +48,10 @@ public class AdminEventsListFragment extends Fragment {
                 if (dataSnapshot.hasChildren()) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         HashMap<String, Object> singleEvent = (HashMap<String, Object>) data.getValue();
+                        singleEvent.put("IDEvento", data.getKey());
                         if (singleEvent.get("NombreEncargado").toString().equals(IDUser)) {
                             eventsNameList.add((String) singleEvent.get("Nombre"));
+                            fullInfoEvents.add(singleEvent);
                             editEventsAdapter.notifyDataSetChanged();
                         }
                     }
@@ -69,5 +77,37 @@ public class AdminEventsListFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void editEvent(HashMap<String, Object> eventInfo) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("EditEvent", eventInfo);
+        CreateEvent1stFragment createEvent1stFragment = new CreateEvent1stFragment();
+        createEvent1stFragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.adminPlaceholder, createEvent1stFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void eraseEvent(final HashMap<String, Object> eventInfo, final int position) {
+        new AlertDialog.Builder(getContext())
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(getString(R.string.erase_event_confirm))
+                .setMessage(getString(R.string.erase_event_detail))
+                .setPositiveButton(getString(R.string.accept_message), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DatabaseReference eraseEvRef = FirebaseDatabase.getInstance().getReference("Eventos/" + eventInfo.get("IDEvento"));
+                        eraseEvRef.setValue(null);
+                        eventsNameList.remove(position);
+                        fullInfoEvents.remove(position);
+                        editEventsAdapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton(getString(R.string.decline_message), null)
+                .show();
     }
 }
