@@ -16,11 +16,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import static com.example.chronos.finalproject.AdminMainMenu.IDUser;
-import static com.example.chronos.finalproject.AdminMainMenu.FullNameUser;
 
 public class AdminEventsListFragment extends Fragment {
 

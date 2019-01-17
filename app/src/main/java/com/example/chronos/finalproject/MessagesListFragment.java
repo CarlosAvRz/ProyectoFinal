@@ -3,7 +3,6 @@ package com.example.chronos.finalproject;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.example.chronos.finalproject.MainMenu.IDUser;
-import static com.example.chronos.finalproject.MainMenu.FullNameUser;
 
 public class MessagesListFragment extends Fragment {
 
@@ -47,27 +45,31 @@ public class MessagesListFragment extends Fragment {
         userConvRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                final HashMap<String, Object> userConv = (HashMap<String, Object>) dataSnapshot.getValue();
-                for (final String key : userConv.keySet()) {
-                    DatabaseReference foreignUserName = FirebaseDatabase.getInstance().getReference("Usuarios/" + key);
-                    foreignUserName.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            HashMap<String, Object> forUserData = (HashMap<String, Object>) dataSnapshot.getValue();
-                            String forUserName = forUserData.get("Nombre").toString() + " " + forUserData.get("ApellidoPat").toString() + " " + forUserData.get("ApellidoMat").toString();
-                            HashMap<String, String> newConv = new HashMap<>();
-                            newConv.put("ForeignUserName", forUserName);
-                            conversations.add(newConv);
-                            forUserIDConv.add(key);
-                            convKeys.add((String) userConv.get(key));
-                            ((SimpleAdapter) prevEvListAdapter).notifyDataSetChanged();
-                        }
+                if (dataSnapshot.hasChildren()) {
+                    final HashMap<String, Object> userConv = (HashMap<String, Object>) dataSnapshot.getValue();
+                    for (final String key : userConv.keySet()) {
+                        DatabaseReference foreignUserName = FirebaseDatabase.getInstance().getReference("Usuarios/" + key);
+                        foreignUserName.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.hasChildren()) {
+                                    HashMap<String, Object> forUserData = (HashMap<String, Object>) dataSnapshot.getValue();
+                                    String forUserName = forUserData.get("Nombre").toString() + " " + forUserData.get("ApellidoPat").toString() + " " + forUserData.get("ApellidoMat").toString();
+                                    HashMap<String, String> newConv = new HashMap<>();
+                                    newConv.put("ForeignUserName", forUserName);
+                                    conversations.add(newConv);
+                                    forUserIDConv.add(key);
+                                    convKeys.add((String) userConv.get(key));
+                                    ((SimpleAdapter) prevEvListAdapter).notifyDataSetChanged();
+                                }
+                            }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
             }
 

@@ -4,16 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
@@ -28,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.chronos.finalproject.MainMenu.IDUser;
-import static com.example.chronos.finalproject.MainMenu.FullNameUser;
 
 public class ChatFragment extends Fragment {
 
