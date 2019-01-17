@@ -119,7 +119,7 @@
     <string name="title_admin_reports">Reportes</string>
 
     <!-- Resources for fragment_reports_admin.xml -->
-    <string name="report_admin_title">Reportes pendiente</string>
+    <string name="report_admin_title">Reportes pendientes</string>
     <string name="offender_user">Usuario reportado:</string>
     <string name="offended_user">De:</string>
 
@@ -132,8 +132,12 @@
     <string name="erase_event_confirm">Eliminar evento</string>
     <string name="erase_event_detail">¿Está seguro que desea eliminar el evento seleccionado? Una vez que sea eliminado no podrá recuperarlo</string>
 
-    <!-- Resources for fragment_create_event2ndd.xml -->
+    <!-- Resources for fragment_create_event2nd.xml -->
     <string name="address_text">Dirección aproximada de la ubicación</string>
     <string name="location_error">Por favor toca el mapa para seleccionar una ubicación</string>
 
+    <!-- Resources for ReportDetailsFragment and fragment_report_details.xml -->
+    <string name="report_reason">Razon: </string>
+    <string name="warning">Advertencia</string>
+    <string name="delete">Baja</string>
 </resources>

@@ -68,6 +68,15 @@ public class ReportsAdminFragment extends Fragment {
         reportsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                bundle.putString("ReportID", IDReports.get(position));
+                bundle.putSerializable("ReportInfo", reports.get(position));
+                ReportDetailsFragment reportDetailsFragment = new ReportDetailsFragment();
+                reportDetailsFragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.adminPlaceholder, reportDetailsFragment)
+                        .addToBackStack(null)
+                        .commit();
 
             }
         });
