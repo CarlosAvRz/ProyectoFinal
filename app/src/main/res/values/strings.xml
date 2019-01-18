@@ -44,6 +44,8 @@
     <!-- Resources for LogInActivity -->
     <string name="wrong_credentials">Error al acceder</string>
     <string name="wrong_credentials_detail">El correo o la contraseña son incorrectos</string>
+    <string name="user_banned">Usuario bloqueado</string>
+    <string name="login_accept">Aceptar</string>
 
     <!-- Resources for MainMenu -->
     <string name="title_activity_main_menu">MainMenu</string>
@@ -51,7 +53,7 @@
     <string name="title_posts">Publicaciones</string>
     <string name="title_self_profile">Perfil</string>
 
-    <!-- Resources for popup_details_event.xml and fragment_event_details.xml -->
+    <!-- Resources for EventsMap, popup_details_event.xml and fragment_event_details.xml -->
     <string name="details_button">Ver más</string>
     <string name="organizer_name">Encargado:</string>
     <string name="date_event">Fecha:</string>
@@ -59,6 +61,7 @@
     <string name="assist_option">Asistir</string>
     <string name="event_address">Direccion:</string>
     <string name="toast_assistance">Evento añadido a tu lista de eventos pendientes</string>
+    <string name="permission_req">Permisos necesarios para funcionalidad correcta</string>
 
     <!-- Resources for fragment_self_profile.xml and SelfProfile -->
     <string name="friends_button">Amigos</string>
@@ -140,4 +143,6 @@
     <string name="report_reason">Razon: </string>
     <string name="warning">Advertencia</string>
     <string name="delete">Baja</string>
+    <string name="warning_added">Advertencia agregada</string>
+    <string name="user_deleted">Usuario bloqueado</string>
 </resources>

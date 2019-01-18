@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,6 +26,7 @@ public class LogInActivity extends AppCompatActivity {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Usuarios");
         final boolean[] userMatches = {false};
         final String[] userRole = new String[1];
+        final boolean[] userBlocked = {false};
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -38,14 +40,26 @@ public class LogInActivity extends AppCompatActivity {
                             IDUser = data.getKey();
                             FullNameUser = userValues.get("Nombre").toString() + " " + userValues.get("ApellidoPat").toString() + " " + userValues.get("ApellidoMat").toString();
                             userRole[0] = (String) userValues.get("Rol");
+                            if (userValues.containsKey("Advertencias") && (Long) userValues.get("Advertencias") >= 3) {
+                                userBlocked[0] = true;
+                            }
                         }
                     }
                     if (userMatches[0]) {
                         if (userRole[0].equals("Usuario")) {
-                            Intent intent = new Intent(getApplicationContext(), MainMenu.class);
-                            intent.putExtra("IDUser", IDUser);
-                            intent.putExtra("FullNameUser", FullNameUser);
-                            startActivity(intent);
+                            if (!userBlocked[0]) {
+                                Intent intent = new Intent(getApplicationContext(), MainMenu.class);
+                                intent.putExtra("IDUser", IDUser);
+                                intent.putExtra("FullNameUser", FullNameUser);
+                                startActivity(intent);
+                            } else {
+                                new AlertDialog.Builder(LogInActivity.this)
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setTitle(getString(R.string.wrong_credentials))
+                                        .setMessage(getString(R.string.user_banned))
+                                        .setPositiveButton(getString(R.string.login_accept), null)
+                                        .show();
+                            }
                         } else {
                             Intent intent = new Intent(getApplicationContext(), AdminMainMenu.class);
                             intent.putExtra("IDUser", IDUser);

@@ -172,6 +172,7 @@ public class EditProfile2ndFragment extends Fragment {
                     profilePic = BitmapFactory.decodeResource(getResources(), R.drawable.default_profile_picture);
                 }
 
+                // Actualizar nombre
                 DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Usuarios/" + IDUser);
                 Map<String, Object> valuesToSet = new HashMap<>();
                 valuesToSet.put("Rol", "Usuario");
@@ -185,6 +186,7 @@ public class EditProfile2ndFragment extends Fragment {
                 valuesToSet.put("Contrasenia", password);
                 usersRef.updateChildren(valuesToSet);
 
+                // Actualizar foto de perfil solo si es diferente
                 if (profilePic != prevProfPic) {
                     DatabaseReference profPicUserRef = FirebaseDatabase.getInstance().getReference("Usuarios-FotosPerfil/" + IDUser);
                     Map<String, Object> photoUpdate = new HashMap<>();
@@ -192,56 +194,52 @@ public class EditProfile2ndFragment extends Fragment {
                     profPicUserRef.updateChildren(photoUpdate);
                 }
 
-
-                String tempID = name + lastName + mLastName;
+                // Actualizar publicaciones con el nombre nuevo y nodos de amigos
                 final String tempFullName = name + " " + lastName + " " + mLastName;
-                if (!IDUser.equals(tempID)) {
-                    FullNameUser = tempFullName;
-                    DatabaseReference updatePostsRef = FirebaseDatabase.getInstance().getReference("Publicaciones");
-                    updatePostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.hasChildren()) {
-                                for (DataSnapshot data: dataSnapshot.getChildren()) {
-                                    HashMap<String, Object> singlePost = (HashMap<String, Object>) data.getValue();
-                                    if (singlePost.get("IDUsuario").toString().equals(IDUser)) {
-                                        DatabaseReference singlePostUpdate = FirebaseDatabase.getInstance().getReference("Publicaciones/" + data.getKey() + "/NombreUsuario");
-                                        singlePostUpdate.setValue(tempFullName);
-                                    }
+                FullNameUser = tempFullName;
+                DatabaseReference updatePostsRef = FirebaseDatabase.getInstance().getReference("Publicaciones");
+                updatePostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChildren()) {
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                HashMap<String, Object> singlePost = (HashMap<String, Object>) data.getValue();
+                                if (singlePost.get("IDUsuario").toString().equals(IDUser)) {
+                                    DatabaseReference singlePostUpdate = FirebaseDatabase.getInstance().getReference("Publicaciones/" + data.getKey() + "/NombreUsuario");
+                                    singlePostUpdate.setValue(tempFullName);
                                 }
                             }
                         }
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
-                    DatabaseReference updateFriendsRef = FirebaseDatabase.getInstance().getReference("Amigos");
-                    updateFriendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.hasChildren()) {
-                                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                    HashMap<String, Object> friendList = (HashMap<String, Object>) data.getValue();
-                                    if (friendList.containsKey(IDUser)) {
-                                        DatabaseReference singleFriendUpdate = FirebaseDatabase.getInstance().getReference("Amigos/" + data.getKey() + "/" + IDUser);
-                                        singleFriendUpdate.setValue(tempFullName);
-                                    }
+                    }
+                });
+                DatabaseReference updateFriendsRef = FirebaseDatabase.getInstance().getReference("Amigos");
+                updateFriendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChildren()) {
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                HashMap<String, Object> friendList = (HashMap<String, Object>) data.getValue();
+                                if (friendList.containsKey(IDUser)) {
+                                    DatabaseReference singleFriendUpdate = FirebaseDatabase.getInstance().getReference("Amigos/" + data.getKey() + "/" + IDUser);
+                                    singleFriendUpdate.setValue(tempFullName);
                                 }
                             }
                         }
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
-                }
+                    }
+                });
 
+                //  Lanzar el fragmento de perfil propio
                 Toast.makeText(getContext(), getString(R.string.values_updated), Toast.LENGTH_SHORT).show();
-                Log.i("TestApp", FullNameUser);
-                
                 SelfProfile selfProfile = new SelfProfile();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.placeHolderFrameLayout, selfProfile)

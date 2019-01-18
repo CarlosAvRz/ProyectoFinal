@@ -28,12 +28,13 @@ public class ReportsAdminFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_reports_admin, container, false);
 
         final ArrayList<String> IDReports = new ArrayList<>();
+        final ArrayList<HashMap<String, Object>> reportsFullInfo= new ArrayList<>();
 
-        final ArrayList<HashMap<String, String>> reports = new ArrayList<>();
+        final ArrayList<HashMap<String, String>> reportsList = new ArrayList<>();
         ListView reportsListView = rootView.findViewById(R.id.reportsListView);
         final ListAdapter prevEvListAdapter = new SimpleAdapter(
                 getContext(),
-                reports,
+                reportsList,
                 R.layout.reports_list_item,
                 new String[]{"offendedUser","offenderUser", "reportType", "reportContent"},
                 new int[]{R.id.offendedUser,R.id.offenderUser, R.id.reportType, R.id.reportContent});
@@ -47,12 +48,13 @@ public class ReportsAdminFragment extends Fragment {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         HashMap<String, Object> singleReport = (HashMap<String, Object>) data.getValue();
                         IDReports.add(data.getKey());
+                        reportsFullInfo.add(singleReport);
                         HashMap<String, String> newReport = new HashMap<>();
                         newReport.put("offendedUser", getString(R.string.offended_user) + " " + singleReport.get("IDUsuario").toString());
                         newReport.put("offenderUser", getString(R.string.offender_user) + " " + singleReport.get("IDReportado").toString());
                         newReport.put("reportType", singleReport.get("Tipo").toString());
                         newReport.put("reportContent", singleReport.get("Contenido").toString());
-                        reports.add(newReport);
+                        reportsList.add(newReport);
                         ((SimpleAdapter) prevEvListAdapter).notifyDataSetChanged();
                     }
                 }
@@ -70,7 +72,7 @@ public class ReportsAdminFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
                 bundle.putString("ReportID", IDReports.get(position));
-                bundle.putSerializable("ReportInfo", reports.get(position));
+                bundle.putSerializable("ReportInfo", reportsFullInfo.get(position));
                 ReportDetailsFragment reportDetailsFragment = new ReportDetailsFragment();
                 reportDetailsFragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager().beginTransaction()

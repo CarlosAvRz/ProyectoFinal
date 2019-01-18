@@ -41,8 +41,24 @@ public class EventDetailsFragment extends Fragment {
     LatLng singleLatLng;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Preparar mensaje de error
+        Toast toast = Toast.makeText(getContext(), getString(R.string.permission_req), Toast.LENGTH_SHORT);
+        TextView toastModifier = toast.getView().findViewById(android.R.id.message);
+        toastModifier.setGravity(Gravity.CENTER);
+
+        // Comprobar que los permisos sean concedidos y que sean de ACCES_FINE_LOCATION
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                googleMap.setMyLocationEnabled(true);
+            } else {
+                toast.show();
+            }
+        } else {
+            toast.show();
+        }
     }
 
     @Override
@@ -82,9 +98,10 @@ public class EventDetailsFragment extends Fragment {
 
                 // Solicitar permisos
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                } else {
+                    googleMap.setMyLocationEnabled(true);
                 }
-                googleMap.setMyLocationEnabled(true);
 
                 // Zoom automatico en el zocalo de la ciudad de Oaxaca
                 googleMap.addMarker(new MarkerOptions()

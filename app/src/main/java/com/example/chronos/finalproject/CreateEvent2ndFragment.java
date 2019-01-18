@@ -5,9 +5,11 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +41,27 @@ public class CreateEvent2ndFragment extends Fragment {
     HashMap<String, Object> eventToEdit;
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Preparar mensaje de error
+        Toast toast = Toast.makeText(getContext(), getString(R.string.permission_req), Toast.LENGTH_SHORT);
+        TextView toastModifier = toast.getView().findViewById(android.R.id.message);
+        toastModifier.setGravity(Gravity.CENTER);
+
+        // Comprobar que los permisos sean concedidos y que sean de ACCES_FINE_LOCATION
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                googleMap.setMyLocationEnabled(true);
+            } else {
+                toast.show();
+            }
+        } else {
+            toast.show();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_create_event2nd, container, false);
@@ -63,9 +86,10 @@ public class CreateEvent2ndFragment extends Fragment {
 
                 // Solicitar permisos
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                } else {
+                    googleMap.setMyLocationEnabled(true);
                 }
-                googleMap.setMyLocationEnabled(true);
 
                 // Zoom automatico en el zocalo de la ciudad de Oaxaca
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(17.0436248,-96.7119411)).zoom(13).build();

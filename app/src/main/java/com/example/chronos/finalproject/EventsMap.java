@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,6 +43,27 @@ public class EventsMap extends Fragment {
     MapView mMapView;
     private GoogleMap googleMap;
     Button showDetailsButton;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Preparar mensaje de error
+        Toast toast = Toast.makeText(getContext(), getString(R.string.permission_req), Toast.LENGTH_SHORT);
+        TextView toastModifier = toast.getView().findViewById(android.R.id.message);
+        toastModifier.setGravity(Gravity.CENTER);
+
+        // Comprobar que los permisos sean concedidos y que sean de ACCES_FINE_LOCATION
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                googleMap.setMyLocationEnabled(true);
+            } else {
+                toast.show();
+            }
+        } else {
+            toast.show();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,9 +100,10 @@ public class EventsMap extends Fragment {
 
                 // Solicitar permisos
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                } else {
+                    googleMap.setMyLocationEnabled(true);
                 }
-                googleMap.setMyLocationEnabled(true);
 
                 //mostrar todos los eventos
                 DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("Eventos");
