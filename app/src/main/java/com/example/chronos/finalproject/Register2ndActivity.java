@@ -30,6 +30,7 @@ public class Register2ndActivity extends AppCompatActivity {
     Bitmap profilePic;
     ImageView imageView;
     String name, lastName, mLastName, email, password, birthDay, birthMonth, birthYear, IDUser;
+    UserData userData = UserData.getInstance();
 
     // Al intentar subir una foto revisar permiso de lectura, si no hay pedirlos, si hay ejecutar metodo getPhoto()
     public void selectPicture(View view) {
@@ -122,9 +123,20 @@ public class Register2ndActivity extends AppCompatActivity {
         photoUpdate.put("fotoPerfil", bitMapToString(profilePic));
         userRef.updateChildren(photoUpdate);
 
+        userData.setUserId(IDUser);
+        userData.setName(name);
+        userData.setLastName(lastName);
+        userData.setmLastName(mLastName);
+        userData.setBirthDay(birthDay);
+        userData.setBirthMonth(birthMonth);
+        userData.setBirthYear(birthYear);
+        userData.setEmail(email);
+        userData.setPassword(password);
+        userData.setRole("Usuario");
+        userData.setWarnings(0L);
+        userData.setProfilePic(profilePic);
+
         Intent intent = new Intent(this, MainMenu.class);
-        intent.putExtra("IDUser", IDUser);
-        intent.putExtra("FullNameUser", name + " " + lastName + " " + mLastName);
         startActivity(intent);
     }
 
@@ -144,7 +156,6 @@ public class Register2ndActivity extends AppCompatActivity {
         birthDay = intent.getStringExtra("birthDay");
         birthMonth = intent.getStringExtra("birthMonth");
         birthYear = intent.getStringExtra("birthYear");
-
 
     }
 }

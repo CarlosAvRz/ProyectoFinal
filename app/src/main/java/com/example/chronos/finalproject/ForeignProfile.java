@@ -44,12 +44,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.chronos.finalproject.MainMenu.IDUser;
-import static com.example.chronos.finalproject.MainMenu.FullNameUser;
-
 public class ForeignProfile extends Fragment {
 
     String conversationKey;
+    String IDUser = UserData.getInstance().getUserId();
+    String FullNameUser = UserData.getInstance().getName() + " " + UserData.getInstance().getLastName() + " " + UserData.getInstance().getmLastName();
 
     public Bitmap stringToBitMap(String encodedString) {
         try {

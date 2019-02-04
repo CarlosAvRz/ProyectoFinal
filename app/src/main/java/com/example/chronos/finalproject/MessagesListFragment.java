@@ -20,8 +20,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.example.chronos.finalproject.MainMenu.IDUser;
-
 public class MessagesListFragment extends Fragment {
 
     @Override
@@ -41,7 +39,7 @@ public class MessagesListFragment extends Fragment {
                 new int[]{R.id.friendReqTextView});
         conversationsListView.setAdapter(prevEvListAdapter);
 
-        DatabaseReference userConvRef = FirebaseDatabase.getInstance().getReference("Usuarios-Conversaciones/" + IDUser);
+        DatabaseReference userConvRef = FirebaseDatabase.getInstance().getReference("Usuarios-Conversaciones/" + UserData.getInstance().getUserId());
         userConvRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

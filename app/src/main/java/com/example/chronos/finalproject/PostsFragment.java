@@ -20,8 +20,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.example.chronos.finalproject.MainMenu.IDUser;
-
 public class PostsFragment extends Fragment {
 
     @Override
@@ -75,7 +73,7 @@ public class PostsFragment extends Fragment {
         postsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!fullPostsInfo.get(position).get("IDUsuario").equals(IDUser)) {
+                if (!fullPostsInfo.get(position).get("IDUsuario").equals(UserData.getInstance().getUserId())) {
                     Bundle bundle = new Bundle();
                     bundle.putString("ForeignUserID", fullPostsInfo.get(position).get("IDUsuario").toString());
                     bundle.putString("ForeignUserName", allPosts.get(position).get("UserName"));

@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.chronos.finalproject.MainMenu.IDUser;
-
 public class ChatFragment extends Fragment {
+
+    String IDUser = UserData.getInstance().getUserId();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

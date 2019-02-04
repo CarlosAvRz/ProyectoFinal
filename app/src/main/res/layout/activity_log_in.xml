@@ -24,7 +24,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/email_edit"
             android:inputType="textVisiblePassword"
-            android:maxLength="255" />
+            android:maxLength="255"
+            android:text="nike19942009@hotmail.com" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -39,7 +40,8 @@
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
                 android:hint="@string/password_edit"
                 android:inputType="textPassword"
-                android:maxLength="30" />
+                android:maxLength="30"
+                android:text="fofofofo" />
         </android.support.design.widget.TextInputLayout>
 
         <Button

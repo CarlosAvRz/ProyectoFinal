@@ -34,11 +34,10 @@ import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
-import static com.example.chronos.finalproject.MainMenu.IDUser;
-import static com.example.chronos.finalproject.MainMenu.FullNameUser;
-
 public class EditProfile2ndFragment extends Fragment {
 
+    String IDUser = UserData.getInstance().getUserId();
+    String FullNameUser = UserData.getInstance().getName() + " " + UserData.getInstance().getLastName() + " " + UserData.getInstance().getmLastName();
     Bitmap profilePic, prevProfPic;
     ImageView edImageView;
 
@@ -114,20 +113,27 @@ public class EditProfile2ndFragment extends Fragment {
         final String birthYear = getArguments().getString("birthYear");
 
         // Imagen previa de perfil
-        DatabaseReference prevImageRef = FirebaseDatabase.getInstance().getReference("Usuarios-FotosPerfil/" + IDUser + "/fotoPerfil");
-        prevImageRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                prevProfPic = stringToBitMap((String) dataSnapshot.getValue());
-                profilePic = prevProfPic;
-                edImageView.setImageBitmap(profilePic);
-            }
+        prevProfPic = UserData.getInstance().getProfilePic();
+        if (prevProfPic != null) {
+            profilePic = prevProfPic;
+            edImageView.setImageBitmap(profilePic);
+        } else {
+            DatabaseReference prevImageRef = FirebaseDatabase.getInstance().getReference("Usuarios-FotosPerfil/" + IDUser + "/fotoPerfil");
+            prevImageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    prevProfPic = stringToBitMap((String) dataSnapshot.getValue());
+                    profilePic = prevProfPic;
+                    UserData.getInstance().setProfilePic(prevProfPic);
+                    edImageView.setImageBitmap(profilePic);
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
 
         // Funcion para el boton de seleccionar, al intentar subir una foto revisar permiso de lectura, si no hay pedirlos, si hay ejecutar metodo getPhoto()
         edSelectProfilePicButton.setOnClickListener(new View.OnClickListener() {
@@ -168,10 +174,6 @@ public class EditProfile2ndFragment extends Fragment {
         edFinishRegButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (profilePic == null) {
-                    profilePic = BitmapFactory.decodeResource(getResources(), R.drawable.default_profile_picture);
-                }
-
                 // Actualizar nombre
                 DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Usuarios/" + IDUser);
                 Map<String, Object> valuesToSet = new HashMap<>();
@@ -184,7 +186,18 @@ public class EditProfile2ndFragment extends Fragment {
                 valuesToSet.put("AnioNac", birthYear);
                 valuesToSet.put("Correo", email);
                 valuesToSet.put("Contrasenia", password);
+                valuesToSet.put("Advertencias", UserData.getInstance().getWarnings());
                 usersRef.updateChildren(valuesToSet);
+
+                UserData userData = UserData.getInstance();
+                userData.setName(name);
+                userData.setLastName(lastName);
+                userData.setmLastName(mLastName);
+                userData.setBirthDay(birthDay);
+                userData.setBirthMonth(birthMonth);
+                userData.setBirthYear(birthYear);
+                userData.setEmail(email);
+                userData.setPassword(password);
 
                 // Actualizar foto de perfil solo si es diferente
                 if (profilePic != prevProfPic) {
@@ -192,6 +205,7 @@ public class EditProfile2ndFragment extends Fragment {
                     Map<String, Object> photoUpdate = new HashMap<>();
                     photoUpdate.put("fotoPerfil", bitMapToString(profilePic));
                     profPicUserRef.updateChildren(photoUpdate);
+                    UserData.getInstance().setProfilePic(profilePic);
                 }
 
                 // Actualizar publicaciones con el nombre nuevo y nodos de amigos

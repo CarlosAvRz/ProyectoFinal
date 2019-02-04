@@ -20,12 +20,11 @@ import java.util.Map;
 public class LogInActivity extends AppCompatActivity {
 
     EditText emailEditText, passwordEditText;
-    String IDUser, FullNameUser;
+    UserData userData = UserData.getInstance();
 
     public void logInAccount(View view) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Usuarios");
         final boolean[] userMatches = {false};
-        final String[] userRole = new String[1];
         final boolean[] userBlocked = {false};
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -33,24 +32,34 @@ public class LogInActivity extends AppCompatActivity {
                 if (dataSnapshot.hasChildren()) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         Map<String, Object> userValues = (Map<String, Object>) data.getValue();
-                        String userEmail = userValues.get("Correo").toString();
-                        String userPassword = userValues.get("Contrasenia").toString();
+                        String userEmail = (String) userValues.get("Correo");
+                        String userPassword = (String) userValues.get("Contrasenia");
                         if (userEmail.equals(emailEditText.getText().toString()) && userPassword.equals(passwordEditText.getText().toString())) {
                             userMatches[0] = true;
-                            IDUser = data.getKey();
-                            FullNameUser = userValues.get("Nombre").toString() + " " + userValues.get("ApellidoPat").toString() + " " + userValues.get("ApellidoMat").toString();
-                            userRole[0] = (String) userValues.get("Rol");
+
+                            userData.setUserId(data.getKey());
+                            userData.setName((String) userValues.get("Nombre"));
+                            userData.setLastName((String) userValues.get("ApellidoPat"));
+                            userData.setmLastName((String) userValues.get("ApellidoMat"));
+                            userData.setBirthDay((String) userValues.get("DiaNac"));
+                            userData.setBirthMonth((String) userValues.get("MesNac"));
+                            userData.setBirthYear((String) userValues.get("AnioNac"));
+                            userData.setEmail((String) userValues.get("Correo"));
+                            userData.setRole((String) userValues.get("Rol"));
+                            userData.setPassword((String) userValues.get("Contrasenia"));
+
                             if (userValues.containsKey("Advertencias") && (Long) userValues.get("Advertencias") >= 3) {
+                                userData.setWarnings((Long) userValues.get("Advertencias"));
                                 userBlocked[0] = true;
+                            } else {
+                                userData.setWarnings(0L);
                             }
                         }
                     }
                     if (userMatches[0]) {
-                        if (userRole[0].equals("Usuario")) {
+                        if (userData.getRole().equals("Usuario")) {
                             if (!userBlocked[0]) {
                                 Intent intent = new Intent(getApplicationContext(), MainMenu.class);
-                                intent.putExtra("IDUser", IDUser);
-                                intent.putExtra("FullNameUser", FullNameUser);
                                 startActivity(intent);
                             } else {
                                 new AlertDialog.Builder(LogInActivity.this)
@@ -62,8 +71,6 @@ public class LogInActivity extends AppCompatActivity {
                             }
                         } else {
                             Intent intent = new Intent(getApplicationContext(), AdminMainMenu.class);
-                            intent.putExtra("IDUser", IDUser);
-                            intent.putExtra("FullNameUser", FullNameUser);
                             startActivity(intent);
                         }
                     } else {

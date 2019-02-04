@@ -40,12 +40,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.chronos.finalproject.MainMenu.IDUser;
-
 public class SelfProfile extends Fragment {
 
     // Variables para publicaciones
     String fullUserName;
+    String IDUser = UserData.getInstance().getUserId();
     ArrayList<Map<String, Object>> posiblePostEventList = new ArrayList<>();
     Map<String, Object> lastSelectedEvent;
 

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,14 +34,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class EventsMap extends Fragment {
 
     MapView mMapView;
     private GoogleMap googleMap;
-    Button showDetailsButton;
+    //Button showDetailsButton;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -80,11 +83,13 @@ public class EventsMap extends Fragment {
         final TextView dateEventTextView = detailsView.findViewById(R.id.dateEventTextView);
         final TextView quotaEventTextView = detailsView.findViewById(R.id.quotaEventTextView);
         final PopupWindow popupWindow = new PopupWindow(detailsView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        showDetailsButton = detailsView.findViewById(R.id.showDetailsButton);
+        final Button showDetailsButton = detailsView.findViewById(R.id.showDetailsButton);
+        final TextView quotaAvailableTextView = detailsView.findViewById(R.id.quotaAvailableTextView);
 
-        // ArrayList para contener a todos los eventos y eventIndex para guardar indice
+        // ArrayList para contener a todos los eventos y eventIndex para guardar indice y arreglo para guardar estado (accesible o no)
         final ArrayList<HashMap<String, Object>> eventsList = new ArrayList<>();
         final int[] eventIndex = {0};
+        final ArrayList<Boolean> accessibleEvent = new ArrayList<>();
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -92,7 +97,6 @@ public class EventsMap extends Fragment {
             e.printStackTrace();
         }
 
-        // TODO: diferenciar iconos de eventos llenos y quitar opcion de seleccionar si ya esta lleno el cupo
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
@@ -112,15 +116,62 @@ public class EventsMap extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.hasChildren()) {
                             for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                HashMap<String, Object> eventValues = (HashMap<String, Object>) data.getValue();
+                                final HashMap<String, Object> eventValues = (HashMap<String, Object>) data.getValue();
                                 eventValues.put("IDEvento", data.getKey());
-                                eventsList.add(eventValues);
-                                double latitude = (double) eventValues.get("Latitud");
-                                double longitude = (double) eventValues.get("Longitud");
-                                LatLng latLng = new LatLng(latitude, longitude);
-                                googleMap.addMarker(new MarkerOptions()
-                                        .position(latLng)
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+
+                                // Determinar fecha para mostrar evento si es proximo
+                                long eventFlag = 0;
+                                try {
+                                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                                    String eventDay = eventValues.get("DiaEvento").toString();
+                                    String eventMonth = eventValues.get("MesEvento").toString();
+                                    String eventYear = eventValues.get("AnioEvento").toString();
+                                    String eventStart = eventValues.get("HoraInicial").toString();
+                                    Date eventDate = dateFormat.parse(eventDay + "/" + eventMonth + "/" + eventYear + " " + eventStart + ":00:00");
+                                    Date actualDate = new Date();
+                                    eventFlag = eventDate.getTime() - actualDate.getTime();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                if (Long.signum(eventFlag) == 1) {
+                                    eventsList.add(eventValues);
+
+                                    // Para cada evento recuperado buscar en la lista de participantes
+                                    DatabaseReference assistantsRef = FirebaseDatabase.getInstance().getReference("Usuarios-Eventos/" + data.getKey());
+                                    assistantsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            double latitude = (double) eventValues.get("Latitud");
+                                            double longitude = (double) eventValues.get("Longitud");
+                                            LatLng latLng = new LatLng(latitude, longitude);
+                                            if (dataSnapshot.hasChildren()) {
+                                                HashMap<String, Object> eventAssistants = (HashMap<String, Object>) dataSnapshot.getValue();
+                                                Integer numberOfAssistants = eventAssistants.size();
+                                                if (numberOfAssistants >= Long.valueOf(eventValues.get("Cupo").toString())) {
+                                                    googleMap.addMarker(new MarkerOptions()
+                                                            .position(latLng)
+                                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                                                    accessibleEvent.add(false);
+                                                } else {
+                                                    googleMap.addMarker(new MarkerOptions()
+                                                            .position(latLng)
+                                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                                                    accessibleEvent.add(true);
+                                                }
+                                            } else {
+                                                googleMap.addMarker(new MarkerOptions()
+                                                        .position(latLng)
+                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                                                accessibleEvent.add(true);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
                             }
                         }
                     }
@@ -144,6 +195,13 @@ public class EventsMap extends Fragment {
                                 organizerNameTextView.setText(getString(R.string.organizer_name) + " " + singleEvent.get("NombreEncargado").toString());
                                 dateEventTextView.setText(getString(R.string.date_event) + " " + singleEvent.get("DiaEvento").toString() + "/" + singleEvent.get("MesEvento").toString() + "/" + singleEvent.get("AnioEvento").toString());
                                 quotaEventTextView.setText(getString(R.string.quota) + " " + singleEvent.get("Cupo").toString());
+                                if (accessibleEvent.get(i).equals(true)) {
+                                    quotaAvailableTextView.setText(getString(R.string.quota_available));
+                                    showDetailsButton.setEnabled(true);
+                                } else {
+                                    quotaAvailableTextView.setText(getString(R.string.quota_empty));
+                                    showDetailsButton.setEnabled(false);
+                                }
                                 eventIndex[0] = i;
                             }
                         }

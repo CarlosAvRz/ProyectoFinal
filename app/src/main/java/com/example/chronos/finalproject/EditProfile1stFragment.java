@@ -33,8 +33,6 @@ import java.util.HashMap;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static java.util.Arrays.asList;
 
-import static com.example.chronos.finalproject.MainMenu.IDUser;
-
 public class EditProfile1stFragment extends Fragment {
 
     Spinner edDaySpinner, edMonthSpinner, edYearSpinner;
@@ -311,7 +309,7 @@ public class EditProfile1stFragment extends Fragment {
         edYearSpinner.setOnTouchListener(keyboardOnTouchListener);
 
         // Descarga de datos previos
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Usuarios/" + IDUser);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Usuarios/" + UserData.getInstance().getUserId());
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

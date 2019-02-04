@@ -26,10 +26,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.chronos.finalproject.MainMenu.IDUser;
-import static com.example.chronos.finalproject.MainMenu.FullNameUser;
-
 public class FriendsListFragment extends Fragment {
+
+    // Strings con id y nombre de usuario
+    String IDUser = UserData.getInstance().getUserId();
+    String FullNameUser = UserData.getInstance().getName() + " " + UserData.getInstance().getLastName() + " " + UserData.getInstance().getmLastName();
 
     // Arreglos para las llaves de los usuarios amigos y solicitantes de amistad
     ArrayList<String> friendsKeys = new ArrayList<>();

@@ -85,7 +85,6 @@ public class Register1stActivity extends AppCompatActivity {
     public void continueRegister(View view) {
         if (isValidName(nameEditText) == 0 && isValidName(lastNameEditText) == 0 && isValidName(mLastNameEditText) == 0 && isValidEmail() && isValidPassword() && isValidDate()) {
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Usuarios");
-            final boolean[] userNameExists = {false};
             final boolean[] userEmailExists = {false};
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -93,25 +92,12 @@ public class Register1stActivity extends AppCompatActivity {
                     if (dataSnapshot.hasChildren()) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             Map<String, Object> userValues = (Map<String, Object>) data.getValue();
-                            String userName = userValues.get("Nombre").toString();
-                            String userLastName = userValues.get("ApellidoPat").toString();
-                            String usermLastName = userValues.get("ApellidoMat").toString();
-                            String userEmail = userValues.get("Correo").toString();
-                            if (userName.equals(nameEditText.getText().toString()) && userLastName.equals(lastNameEditText.getText().toString()) && usermLastName.equals(mLastNameEditText.getText().toString())) {
-                                userNameExists[0] = true;
-                            } else if (userEmail.equals(emailEditText.getText().toString())) {
+                            String userEmail = (String) userValues.get("Correo");
+                            if (userEmail.equals(emailEditText.getText().toString())) {
                                 userEmailExists[0] = true;
                             }
                         }
-                        if (userNameExists[0]) {
-                            new AlertDialog.Builder(Register1stActivity.this)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setTitle(getString(R.string.username_alredy_exists))
-                                    .setMessage(getString(R.string.username_alredy_exists_detail))
-                                    .setPositiveButton(getString(R.string.ok_option), null)
-                                    .show();
-                        }
-                        else if (userEmailExists[0]) {
+                        if (userEmailExists[0]) {
                             new AlertDialog.Builder(Register1stActivity.this)
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .setTitle(getString(R.string.email_alredy_exists))
@@ -120,7 +106,7 @@ public class Register1stActivity extends AppCompatActivity {
                                     .show();
                         }
                     }
-                    if (!userNameExists[0] && !userEmailExists[0]) {
+                    if (!userEmailExists[0]) {
                         Intent intent = new Intent(getApplicationContext(), Register2ndActivity.class);
                         intent.putExtra("name", nameEditText.getText().toString());
                         intent.putExtra("lastName", lastNameEditText.getText().toString());
@@ -157,15 +143,6 @@ public class Register1stActivity extends AppCompatActivity {
                     .setMessage(getString(R.string.description_error))
                     .setPositiveButton(getString(R.string.ok_option), null)
                     .show();
-        }
-    }
-
-    public void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        try {
-            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -341,7 +318,7 @@ public class Register1stActivity extends AppCompatActivity {
         View.OnTouchListener keyboardOnTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                hideKeyboard(validNameTextView);
+                GeneralMethods.hideKeyboard(Register1stActivity.this);
                 v.performClick();
                 return true;
             }

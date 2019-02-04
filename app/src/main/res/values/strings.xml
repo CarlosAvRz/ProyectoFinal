@@ -52,6 +52,8 @@
     <string name="title_events">Eventos</string>
     <string name="title_posts">Publicaciones</string>
     <string name="title_self_profile">Perfil</string>
+    <string name="loguot_title">¿Desea cerrar sesión?</string>
+    <string name="loguot_message">¿Desea cerrar la sesión actual y volver a la pantalla de inicio?</string>
 
     <!-- Resources for EventsMap, popup_details_event.xml and fragment_event_details.xml -->
     <string name="details_button">Ver más</string>
@@ -62,6 +64,8 @@
     <string name="event_address">Direccion:</string>
     <string name="toast_assistance">Evento añadido a tu lista de eventos pendientes</string>
     <string name="permission_req">Permisos necesarios para funcionalidad correcta</string>
+    <string name="quota_available">¡Cupo disponible!</string>
+    <string name="quota_empty">Cupo lleno :(</string>
 
     <!-- Resources for fragment_self_profile.xml and SelfProfile -->
     <string name="friends_button">Amigos</string>

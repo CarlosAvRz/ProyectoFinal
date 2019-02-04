@@ -32,8 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.chronos.finalproject.MainMenu.IDUser;
-
 public class EventDetailsFragment extends Fragment {
 
     MapView mMapView;
@@ -125,7 +123,7 @@ public class EventDetailsFragment extends Fragment {
                         } else {
                             allAssistants = new HashMap<>();
                         }
-                        allAssistants.put(IDUser, true);
+                        allAssistants.put(UserData.getInstance().getUserId(), true);
                         eventAssistants.updateChildren(allAssistants);
                     }
 

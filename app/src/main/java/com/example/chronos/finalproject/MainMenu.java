@@ -1,16 +1,19 @@
 package com.example.chronos.finalproject;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 public class MainMenu extends AppCompatActivity {
 
-    static String IDUser, FullNameUser;
+    private static final String BACK_STACK_ROOT_TAG = "root_fragment";
+    FragmentManager fragmentManager = getSupportFragmentManager();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -19,19 +22,25 @@ public class MainMenu extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_events:
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.placeHolderFrameLayout, new EventsMap());
-                    fragmentTransaction.commit();
+                    fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.placeHolderFrameLayout, new EventsMap())
+                            .addToBackStack(BACK_STACK_ROOT_TAG)
+                            .commit();
                     return true;
                 case R.id.navigation_posts:
-                    fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.placeHolderFrameLayout, new PostsFragment());
-                    fragmentTransaction.commit();
+                    fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.placeHolderFrameLayout, new PostsFragment())
+                            .addToBackStack(BACK_STACK_ROOT_TAG)
+                            .commit();
                     return true;
                 case R.id.navigation_profile:
-                    fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.placeHolderFrameLayout, new SelfProfile());
-                    fragmentTransaction.commit();
+                    fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.placeHolderFrameLayout, new SelfProfile())
+                            .addToBackStack(BACK_STACK_ROOT_TAG)
+                            .commit();
                     return true;
             }
             return false;
@@ -43,13 +52,29 @@ public class MainMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        Intent intent = getIntent();
-        IDUser = intent.getStringExtra("IDUser");
-        FullNameUser = intent.getStringExtra("FullNameUser");
-
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_events);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (fragmentManager.getBackStackEntryCount() == 1) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(getString(R.string.loguot_title))
+                    .setMessage(getString(R.string.loguot_message))
+                    .setPositiveButton(getString(R.string.accept_message), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getApplicationContext(), LogInSignUpOptionsActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.decline_message), null)
+                    .show();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

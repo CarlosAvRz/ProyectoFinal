@@ -25,6 +25,14 @@
         android:textSize="18sp" />
 
     <TextView
+        android:id="@+id/quotaAvailableTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:textColor="@android:color/white" />
+
+    <TextView
         android:id="@+id/organizerNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
