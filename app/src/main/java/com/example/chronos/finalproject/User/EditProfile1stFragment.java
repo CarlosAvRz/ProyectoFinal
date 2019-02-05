@@ -1,4 +1,4 @@
-package com.example.chronos.finalproject;
+package com.example.chronos.finalproject.User;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.chronos.finalproject.R;
+import com.example.chronos.finalproject.Models.UserData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,6 +41,7 @@ public class EditProfile1stFragment extends Fragment {
     EditText edNameEditText, edLastNameEditText, edMLastNameEditText, edEmailEditText, edPasswordEditText;
     TextView edValidNameTextView, edValidLastNameTextView, edValidmLastNameTextView, edValidEmailTextView,
             edValidPasswordTextView, edValidDateTextView, edDayTextView, edMonthTextView, edYearTextView;
+    UserData userData = UserData.getInstance();
 
     public int isValidName(EditText editText) {
         String text = editText.getText().toString();
@@ -309,32 +312,20 @@ public class EditProfile1stFragment extends Fragment {
         edYearSpinner.setOnTouchListener(keyboardOnTouchListener);
 
         // Descarga de datos previos
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Usuarios/" + UserData.getInstance().getUserId());
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                HashMap<String, Object> userData = (HashMap<String, Object>) dataSnapshot.getValue();
-                edNameEditText.setText(userData.get("Nombre").toString());
-                edLastNameEditText.setText(userData.get("ApellidoPat").toString());
-                edMLastNameEditText.setText(userData.get("ApellidoMat").toString());
-                edEmailEditText.setText(userData.get("Correo").toString());
-                edPasswordEditText.setText(userData.get("Contrasenia").toString());
+        edNameEditText.setText(userData.getName());
+        edLastNameEditText.setText(userData.getLastName());
+        edMLastNameEditText.setText(userData.getmLastName());
+        edEmailEditText.setText(userData.getEmail());
+        edPasswordEditText.setText(userData.getPassword());
 
-                Integer birthDay = Integer.valueOf(userData.get("DiaNac").toString());
-                Integer birthMonth = Integer.valueOf(userData.get("MesNac").toString());
-                Integer birthYear = Integer.valueOf(userData.get("AnioNac").toString());
-                edDaySpinner.setSelection(edDayArrayAdapter.getPosition(birthDay));
-                edMonthSpinner.setSelection(edMonthArrayAdapter.getPosition(birthMonth));
-                edYearSpinner.setSelection(edYearArrayAdapter.getPosition(birthYear));
+        Integer birthDay = Integer.valueOf(userData.getBirthDay());
+        Integer birthMonth = Integer.valueOf(userData.getBirthMonth());
+        Integer birthYear = Integer.valueOf(userData.getBirthYear());
+        edDaySpinner.setSelection(edDayArrayAdapter.getPosition(birthDay));
+        edMonthSpinner.setSelection(edMonthArrayAdapter.getPosition(birthMonth));
+        edYearSpinner.setSelection(edYearArrayAdapter.getPosition(birthYear));
 
-                edNextButton.setEnabled(true);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        edNextButton.setEnabled(true);
 
         // boton para validar datos y pasar a la siguiente actividad
         edNextButton.setOnClickListener(new View.OnClickListener() {

@@ -1,4 +1,4 @@
-package com.example.chronos.finalproject;
+package com.example.chronos.finalproject.User;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +11,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.example.chronos.finalproject.R;
+import com.example.chronos.finalproject.Models.UserData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +27,7 @@ public class MessagesListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inicializar fragmento y variables de la UI
-        View rootView = inflater.inflate(R.layout.fragment_messages_list, container, false);;
+        View rootView = inflater.inflate(R.layout.fragment_messages_list, container, false);
 
         final ArrayList<HashMap<String, String>> conversations = new ArrayList<>();
         final ArrayList<String> forUserIDConv = new ArrayList<>();

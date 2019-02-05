@@ -1,4 +1,4 @@
-package com.example.chronos.finalproject;
+package com.example.chronos.finalproject.Admin;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.chronos.finalproject.Models.UserData;
+import com.example.chronos.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,8 +21,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static com.example.chronos.finalproject.AdminMainMenu.IDUser;
 
 public class AdminEventsListFragment extends Fragment
         implements EditEventsAdapter.EditEventListener, EditEventsAdapter.EraseEventListener {
@@ -49,7 +49,7 @@ public class AdminEventsListFragment extends Fragment
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         HashMap<String, Object> singleEvent = (HashMap<String, Object>) data.getValue();
                         singleEvent.put("IDEvento", data.getKey());
-                        if (singleEvent.get("NombreEncargado").toString().equals(IDUser)) {
+                        if (singleEvent.get("NombreEncargado").toString().equals(UserData.getInstance().getUserId())) {
                             eventsNameList.add((String) singleEvent.get("Nombre"));
                             fullInfoEvents.add(singleEvent);
                             editEventsAdapter.notifyDataSetChanged();

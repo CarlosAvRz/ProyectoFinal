@@ -1,4 +1,4 @@
-package com.example.chronos.finalproject;
+package com.example.chronos.finalproject.User;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -13,6 +13,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,8 @@ import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.example.chronos.finalproject.R;
+import com.example.chronos.finalproject.Models.UserData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,8 +47,10 @@ import java.util.Map;
 public class SelfProfile extends Fragment {
 
     // Variables para publicaciones
-    String fullUserName;
-    String IDUser = UserData.getInstance().getUserId();
+    UserData userData = UserData.getInstance();
+    String IDUser = userData.getUserId();
+    String fullUserName = UserData.getInstance().getName() + " " + UserData.getInstance().getLastName() + " " + UserData.getInstance().getmLastName();
+
     ArrayList<Map<String, Object>> posiblePostEventList = new ArrayList<>();
     Map<String, Object> lastSelectedEvent;
 
@@ -56,11 +62,6 @@ public class SelfProfile extends Fragment {
             e.getMessage();
             return null;
         }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -111,52 +112,42 @@ public class SelfProfile extends Fragment {
         nextEventsListView.setAdapter(nextEvListAdapter);
 
         // Obtener edad y nombre
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Usuarios/" + IDUser);
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChildren()) {
-                    try {
-                        Map<String, Object> userValues = (HashMap<String, Object>) dataSnapshot.getValue();
-                        profNameTextView.setText(userValues.get("Nombre").toString());
-                        fullUserName = userValues.get("Nombre").toString() + " " + userValues.get("ApellidoPat") + " " + userValues.get("ApellidoMat").toString();
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                        String birthDay = (String) userValues.get("DiaNac");
-                        String birthMonth = (String) userValues.get("MesNac");
-                        String birthYear = (String) userValues.get("AnioNac");
-                        Date actualDate = new Date();
-                        Date userDate = dateFormat.parse(birthYear + "/" + birthMonth + "/" + birthDay);
-                        long userAge = (actualDate.getTime() - userDate.getTime()) / 31536000000L;
-                        profAgeTextView.setText(String.valueOf(userAge) + " " + getString(R.string.age));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        profNameTextView.setText(userData.getName());
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            String birthDay = userData.getBirthDay();
+            String birthMonth = userData.getBirthMonth();
+            String birthYear = userData.getBirthYear();
+            Date actualDate = new Date();
+            Date userDate = dateFormat.parse(birthYear + "/" + birthMonth + "/" + birthDay);
+            long userAge = (actualDate.getTime() - userDate.getTime()) / 31536000000L;
+            profAgeTextView.setText(String.valueOf(userAge) + " " + getString(R.string.age));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         // Obtener imagen de perfil
-        DatabaseReference profPicRef = FirebaseDatabase.getInstance().getReference("Usuarios-FotosPerfil/" + IDUser);
-        profPicRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChildren()) {
-                    Map<String, Object> userImage = (HashMap<String, Object>) dataSnapshot.getValue();
-                    String imageString = userImage.get("fotoPerfil").toString();
-                    profPicImageView.setImageBitmap(stringToBitMap(imageString));
+        if (userData.getProfilePic() != null) {
+            profPicImageView.setImageBitmap(userData.getProfilePic());
+        } else {
+            DatabaseReference profPicRef = FirebaseDatabase.getInstance().getReference("Usuarios-FotosPerfil/" + IDUser);
+            profPicRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.hasChildren()) {
+                        Map<String, Object> userImage = (HashMap<String, Object>) dataSnapshot.getValue();
+                        String imageString = userImage.get("fotoPerfil").toString();
+                        userData.setProfilePic(stringToBitMap(imageString));
+                        profPicImageView.setImageBitmap(userData.getProfilePic());
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
 
         // Obtener lista de eventos y añadir el evento donde se encuentre el usuario
         DatabaseReference userEventsRef = FirebaseDatabase.getInstance().getReference("Usuarios-Eventos");

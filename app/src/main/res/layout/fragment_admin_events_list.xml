@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".AdminEventsListFragment">
+    tools:context=".Admin.AdminEventsListFragment">
 
     <TextView
         android:id="@+id/textView2"

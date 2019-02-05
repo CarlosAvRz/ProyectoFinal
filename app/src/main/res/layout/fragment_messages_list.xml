@@ -8,7 +8,7 @@
     android:layout_marginRight="20dp"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".MessagesListFragment">
+    tools:context=".User.MessagesListFragment">
 
 
     <TextView

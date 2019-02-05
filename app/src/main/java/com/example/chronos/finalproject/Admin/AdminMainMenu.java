@@ -1,4 +1,4 @@
-package com.example.chronos.finalproject;
+package com.example.chronos.finalproject.Admin;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -6,11 +6,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-public class MainMenu extends AppCompatActivity {
+import com.example.chronos.finalproject.LogInSignUpOptionsActivity;
+import com.example.chronos.finalproject.R;
+import com.example.chronos.finalproject.User.EventsMap;
+
+public class AdminMainMenu extends AppCompatActivity {
 
     private static final String BACK_STACK_ROOT_TAG = "root_fragment";
     FragmentManager fragmentManager = getSupportFragmentManager();
@@ -21,24 +26,17 @@ public class MainMenu extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_events:
+                case R.id.navigation_new_events:
                     fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     fragmentManager.beginTransaction()
-                            .replace(R.id.placeHolderFrameLayout, new EventsMap())
+                            .replace(R.id.adminPlaceholder, new AdminEventsListFragment())
                             .addToBackStack(BACK_STACK_ROOT_TAG)
                             .commit();
                     return true;
-                case R.id.navigation_posts:
+                case R.id.navigation_show_reports:
                     fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     fragmentManager.beginTransaction()
-                            .replace(R.id.placeHolderFrameLayout, new PostsFragment())
-                            .addToBackStack(BACK_STACK_ROOT_TAG)
-                            .commit();
-                    return true;
-                case R.id.navigation_profile:
-                    fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.placeHolderFrameLayout, new SelfProfile())
+                            .replace(R.id.adminPlaceholder, new ReportsAdminFragment())
                             .addToBackStack(BACK_STACK_ROOT_TAG)
                             .commit();
                     return true;
@@ -50,11 +48,11 @@ public class MainMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_menu);
+        setContentView(R.layout.activity_admin_main_menu);
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.adminNavigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_events);
+        navigation.setSelectedItemId(R.id.navigation_new_events);
     }
 
     @Override

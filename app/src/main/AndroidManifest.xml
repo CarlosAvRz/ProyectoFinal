@@ -20,11 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Register1stActivity" />
-        <activity android:name=".Register2ndActivity" />
+        <activity android:name=".User.Register1stActivity" />
+        <activity android:name=".User.Register2ndActivity" />
         <activity android:name=".LogInActivity" />
         <activity
-            android:name=".MainMenu"
+            android:name=".User.MainMenu"
             android:label="@string/title_activity_main_menu" />
 
         <meta-data
@@ -35,7 +35,7 @@
             android:value="AIzaSyCvLktp7od2AMDiHTit_XrfUEc0Cdt5gRw" />
 
         <activity
-            android:name=".AdminMainMenu"
+            android:name=".Admin.AdminMainMenu"
             android:label="@string/title_activity_admin_main_menu"></activity>
     </application>
 

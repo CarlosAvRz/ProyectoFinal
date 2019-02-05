@@ -9,7 +9,7 @@
     android:layout_marginRight="20dp"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".FriendsListFragment">
+    tools:context=".User.FriendsListFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

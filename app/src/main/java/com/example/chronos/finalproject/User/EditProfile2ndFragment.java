@@ -1,4 +1,4 @@
-package com.example.chronos.finalproject;
+package com.example.chronos.finalproject.User;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -12,9 +12,9 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +22,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.chronos.finalproject.R;
+import com.example.chronos.finalproject.Models.UserData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,9 +39,11 @@ import static android.app.Activity.RESULT_OK;
 public class EditProfile2ndFragment extends Fragment {
 
     String IDUser = UserData.getInstance().getUserId();
-    String FullNameUser = UserData.getInstance().getName() + " " + UserData.getInstance().getLastName() + " " + UserData.getInstance().getmLastName();
     Bitmap profilePic, prevProfPic;
     ImageView edImageView;
+
+    private static final String BACK_STACK_ROOT_TAG = "root_fragment";
+    FragmentManager fragmentManager;
 
     // Resultado de permisos para subir foto de perfil, en caso de negarse mostrar mensaje
     @Override
@@ -210,7 +214,6 @@ public class EditProfile2ndFragment extends Fragment {
 
                 // Actualizar publicaciones con el nombre nuevo y nodos de amigos
                 final String tempFullName = name + " " + lastName + " " + mLastName;
-                FullNameUser = tempFullName;
                 DatabaseReference updatePostsRef = FirebaseDatabase.getInstance().getReference("Publicaciones");
                 updatePostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -254,11 +257,9 @@ public class EditProfile2ndFragment extends Fragment {
 
                 //  Lanzar el fragmento de perfil propio
                 Toast.makeText(getContext(), getString(R.string.values_updated), Toast.LENGTH_SHORT).show();
-                SelfProfile selfProfile = new SelfProfile();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.placeHolderFrameLayout, selfProfile)
-                        .addToBackStack(null)
-                        .commit();
+
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, 0);
             }
         });
 

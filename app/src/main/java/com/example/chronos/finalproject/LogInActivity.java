@@ -7,8 +7,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import com.example.chronos.finalproject.Admin.AdminMainMenu;
+import com.example.chronos.finalproject.Models.UserData;
+import com.example.chronos.finalproject.User.MainMenu;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

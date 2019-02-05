@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.chronos.finalproject.User.Register1stActivity;
+
 public class LogInSignUpOptionsActivity extends AppCompatActivity {
 
     Button logInButton;

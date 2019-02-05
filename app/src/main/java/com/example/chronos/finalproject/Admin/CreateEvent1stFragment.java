@@ -1,9 +1,8 @@
-package com.example.chronos.finalproject;
+package com.example.chronos.finalproject.Admin;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.chronos.finalproject.Models.UserData;
+import com.example.chronos.finalproject.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 import static java.util.Arrays.asList;
-
-import static com.example.chronos.finalproject.AdminMainMenu.IDUser;
 
 public class CreateEvent1stFragment extends Fragment {
 
@@ -34,7 +33,7 @@ public class CreateEvent1stFragment extends Fragment {
 
         final EditText evNameEditText = rootView.findViewById(R.id.evNameEditText);
         final EditText evOrgEditText = rootView.findViewById(R.id.evOrgEditText);
-        evOrgEditText.setText(IDUser);
+        evOrgEditText.setText(UserData.getInstance().getUserId());
         final EditText evQuotaEditText = rootView.findViewById(R.id.evQuotaEditText);
 
         final TextView evValidDataTextView = rootView.findViewById(R.id.evValidDataTextView);

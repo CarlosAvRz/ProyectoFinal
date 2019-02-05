@@ -1,4 +1,4 @@
-package com.example.chronos.finalproject;
+package com.example.chronos.finalproject.Admin;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.chronos.finalproject.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -34,6 +36,9 @@ public class CreateEvent3rdFragment extends Fragment {
 
     Bitmap eventPic;
     ImageView edImageView;
+
+    private static final String BACK_STACK_ROOT_TAG = "root_fragment";
+    FragmentManager fragmentManager;
 
     // Resultado de permisos para subir foto de perfil, en caso de negarse mostrar mensaje
     @Override
@@ -167,11 +172,8 @@ public class CreateEvent3rdFragment extends Fragment {
                 DatabaseReference evPicRef = FirebaseDatabase.getInstance().getReference("Eventos-Fotos/" + key);
                 evPicRef.setValue(bitMapToString(eventPic));
 
-                AdminEventsListFragment adminEventsListFragment = new AdminEventsListFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.adminPlaceholder, adminEventsListFragment)
-                        .addToBackStack(null)
-                        .commit();
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, 0);
             }
         });
 

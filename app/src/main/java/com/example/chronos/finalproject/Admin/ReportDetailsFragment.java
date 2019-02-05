@@ -1,10 +1,9 @@
-package com.example.chronos.finalproject;
+package com.example.chronos.finalproject.Admin;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chronos.finalproject.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,6 +22,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
 public class ReportDetailsFragment extends Fragment {
+
+    private static final String BACK_STACK_ROOT_TAG = "root_fragment";
+    FragmentManager fragmentManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,11 +69,10 @@ public class ReportDetailsFragment extends Fragment {
                         reportRef.setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                ReportsAdminFragment reportsAdminFragment = new ReportsAdminFragment();
-                                getActivity().getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.adminPlaceholder, reportsAdminFragment)
-                                        .addToBackStack(null)
-                                        .commit();
+
+                                fragmentManager = getActivity().getSupportFragmentManager();
+                                fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, 0);
+
                                 Toast.makeText(getContext(), getString(R.string.warning_added), Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -96,11 +98,10 @@ public class ReportDetailsFragment extends Fragment {
                 reportRef.setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        ReportsAdminFragment reportsAdminFragment = new ReportsAdminFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.adminPlaceholder, reportsAdminFragment)
-                                .addToBackStack(null)
-                                .commit();
+
+                        fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, 0);
+
                         Toast.makeText(getContext(), getString(R.string.user_deleted), Toast.LENGTH_SHORT).show();
                     }
                 });

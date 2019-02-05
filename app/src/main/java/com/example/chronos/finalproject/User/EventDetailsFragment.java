@@ -1,4 +1,4 @@
-package com.example.chronos.finalproject;
+package com.example.chronos.finalproject.User;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chronos.finalproject.R;
+import com.example.chronos.finalproject.Models.UserData;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -37,6 +40,9 @@ public class EventDetailsFragment extends Fragment {
     MapView mMapView;
     private GoogleMap googleMap;
     LatLng singleLatLng;
+
+    private static final String BACK_STACK_ROOT_TAG = "root_fragment";
+    FragmentManager fragmentManager;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -132,15 +138,13 @@ public class EventDetailsFragment extends Fragment {
 
                     }
                 });
-                EventsMap eventsMap = new EventsMap();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.placeHolderFrameLayout, eventsMap)
-                        .addToBackStack(null)
-                        .commit();
                 Toast toast = Toast.makeText(getContext(), getString(R.string.toast_assistance), Toast.LENGTH_LONG);
                 TextView toastModifier = toast.getView().findViewById(android.R.id.message);
                 toastModifier.setGravity(Gravity.CENTER);
                 toast.show();
+
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, 0);
             }
         });
 

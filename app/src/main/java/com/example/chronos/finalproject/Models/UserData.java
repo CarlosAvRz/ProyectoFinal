@@ -1,4 +1,4 @@
-package com.example.chronos.finalproject;
+package com.example.chronos.finalproject.Models;
 
 import android.graphics.Bitmap;
 
