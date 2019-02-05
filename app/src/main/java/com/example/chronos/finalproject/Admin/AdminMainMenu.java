@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.example.chronos.finalproject.LogInSignUpOptionsActivity;
+import com.example.chronos.finalproject.Models.UserData;
 import com.example.chronos.finalproject.R;
 import com.example.chronos.finalproject.User.EventsMap;
 
@@ -65,6 +66,7 @@ public class AdminMainMenu extends AppCompatActivity {
                     .setPositiveButton(getString(R.string.accept_message), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            UserData.getInstance().cleanInstance();
                             Intent intent = new Intent(getApplicationContext(), LogInSignUpOptionsActivity.class);
                             startActivity(intent);
                         }

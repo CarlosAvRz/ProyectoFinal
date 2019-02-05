@@ -111,4 +111,19 @@ public class UserData {
     public String getPassword() {
         return password;
     }
+
+    public void cleanInstance() {
+        birthYear = null;
+        birthMonth = null;
+        birthDay = null;
+        name = null;
+        lastName = null;
+        mLastName = null;
+        email = null;
+        role = null;
+        userId = null;
+        password = null;
+        warnings = null;
+        profilePic = null;
+    }
 }

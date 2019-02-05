@@ -162,11 +162,8 @@ public class EditProfile2ndFragment extends Fragment {
                         .setPositiveButton(getString(R.string.accept_message), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                SelfProfile selfProfile = new SelfProfile();
-                                getActivity().getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.placeHolderFrameLayout, selfProfile)
-                                        .addToBackStack(null)
-                                        .commit();
+                                fragmentManager = getActivity().getSupportFragmentManager();
+                                fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, 0);
                             }
                         })
                         .setNegativeButton(getString(R.string.decline_message), null)

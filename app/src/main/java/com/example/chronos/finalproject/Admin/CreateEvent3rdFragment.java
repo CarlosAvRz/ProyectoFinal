@@ -125,11 +125,8 @@ public class CreateEvent3rdFragment extends Fragment {
                         .setPositiveButton(getString(R.string.accept_message), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                AdminEventsListFragment adminEventsListFragment = new AdminEventsListFragment();
-                                getActivity().getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.adminPlaceholder, adminEventsListFragment)
-                                        .addToBackStack(null)
-                                        .commit();
+                                fragmentManager = getActivity().getSupportFragmentManager();
+                                fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, 0);
                             }
                         })
                         .setNegativeButton(getString(R.string.decline_message), null)
