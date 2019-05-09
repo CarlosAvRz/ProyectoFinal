@@ -5,7 +5,8 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LogInActivity">
+    tools:context=".LogInActivity"
+    android:background="@drawable/background_gradient">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -14,9 +15,11 @@
         android:layout_marginTop="30dp"
         android:layout_marginRight="30dp"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.40">
 
         <EditText
             android:id="@+id/emailEditText"
@@ -25,7 +28,8 @@
             android:hint="@string/email_edit"
             android:inputType="textVisiblePassword"
             android:maxLength="255"
-            android:text="nike19942009@hotmail.com" />
+            android:text="nike19942009@hotmail.com"
+            android:textColor="@android:color/white" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -41,14 +45,17 @@
                 android:hint="@string/password_edit"
                 android:inputType="textPassword"
                 android:maxLength="30"
-                android:text="fofofofo" />
+                android:text="fofofofo"
+                android:textColor="@android:color/white" />
         </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/logInButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/background_frost_button_selector"
             android:onClick="logInAccount"
-            android:text="@string/log_in_text" />
+            android:text="@string/log_in_text"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

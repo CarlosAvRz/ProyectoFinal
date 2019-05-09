@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.chronos.finalproject.Models.GeneralMethods;
+import com.example.chronos.finalproject.Models.UserExperienceMethods;
 import com.example.chronos.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -319,7 +319,7 @@ public class Register1stActivity extends AppCompatActivity {
         View.OnTouchListener keyboardOnTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                GeneralMethods.hideKeyboard(Register1stActivity.this);
+                UserExperienceMethods.hideKeyboard(Register1stActivity.this);
                 v.performClick();
                 return true;
             }

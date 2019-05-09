@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">FinalProject</string>
 
+    <!-- Resources for OneSignal -->
+    <string name="one_signal_id">fac14cd2-9650-4e40-9198-5ad4511176a8</string>
+
     <!-- Resources for LogInSignUpOptionsActivity -->
     <string name="log_in_text">Iniciar Sesión</string>
     <string name="sign_up_text">Registro</string>
