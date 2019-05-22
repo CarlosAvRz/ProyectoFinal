@@ -151,7 +151,7 @@ public class EditProfile2ndFragment extends Fragment {
             }
         });
 
-        // Cancelar registro y volver a login preguntando en un display alert
+        // Cancelar registro y volver a login_op_login_ic preguntando en un display alert
         edCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

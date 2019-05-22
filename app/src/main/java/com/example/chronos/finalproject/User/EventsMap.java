@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -13,11 +14,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroupOverlay;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chronos.finalproject.Models.UXMethods;
 import com.example.chronos.finalproject.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,6 +50,7 @@ public class EventsMap extends Fragment {
 
     MapView mMapView;
     private GoogleMap googleMap;
+    ViewGroup root;
     //Button showDetailsButton;
 
     @Override
@@ -78,14 +83,17 @@ public class EventsMap extends Fragment {
 
         // Inflater para obtener elementos xml del popup y poder modificarlos
         LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View detailsView = layoutInflater.inflate(R.layout.popup_details_event, null);
+        final View detailsView = layoutInflater.inflate(R.layout.popup_details_event, new LinearLayout(rootView.getContext()), false);
         final TextView eventNameTextView = detailsView.findViewById(R.id.eventNameTextView);
         final TextView organizerNameTextView = detailsView.findViewById(R.id.organizerNameTextView);
         final TextView dateEventTextView = detailsView.findViewById(R.id.dateEventTextView);
         final TextView quotaEventTextView = detailsView.findViewById(R.id.quotaEventTextView);
+
+        // Popup y elementos
         final PopupWindow popupWindow = new PopupWindow(detailsView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final Button showDetailsButton = detailsView.findViewById(R.id.showDetailsButton);
         final TextView quotaAvailableTextView = detailsView.findViewById(R.id.quotaAvailableTextView);
+        root = (ViewGroup) getActivity().getWindow().getDecorView().getRootView();
 
         // ArrayList para contener a todos los eventos y eventIndex para guardar indice y arreglo para guardar estado (accesible o no)
         final ArrayList<HashMap<String, Object>> eventsList = new ArrayList<>();
@@ -102,6 +110,8 @@ public class EventsMap extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
+                int pixelsBottomPadding = UXMethods.dpToPx(60, getActivity());
+                googleMap.setPadding(0, 0, 0, pixelsBottomPadding);
 
                 // Solicitar permisos
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -207,10 +217,18 @@ public class EventsMap extends Fragment {
                             }
                         }
                         popupWindow.setAnimationStyle(R.style.popup_window_animation);
-                        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.DKGRAY));
+                        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         popupWindow.setFocusable(true);
                         popupWindow.setOutsideTouchable(true);
-                        popupWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
+                        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                            @Override
+                            public void onDismiss() {
+                                UXMethods.clearDim(root);
+                            }
+                        });
+                        popupWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                        root = (ViewGroup) getActivity().getWindow().getDecorView().getRootView();
+                        UXMethods.applyDim(root, 0.5f);
                         return true;
                     }
                 });
@@ -228,6 +246,7 @@ public class EventsMap extends Fragment {
                                 .addToBackStack(null)
                                 .commit();
                         popupWindow.dismiss();
+                        UXMethods.clearDim(root);
                     }
                 });
 

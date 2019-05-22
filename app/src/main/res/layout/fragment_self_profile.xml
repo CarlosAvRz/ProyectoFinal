@@ -49,7 +49,7 @@
             android:id="@+id/editProfImageView"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/pencil_icon_96" />
+            android:src="@drawable/profile_edit_ic_96" />
 
     </LinearLayout>
 

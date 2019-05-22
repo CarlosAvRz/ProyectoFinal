@@ -23,7 +23,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginRight="10dp"
-            android:src="@drawable/alert_icon_96" />
+            android:src="@drawable/foreign_prof_report_ic" />
 
         <TextView
             android:id="@+id/reportTypeTextView"

@@ -114,7 +114,7 @@ public class CreateEvent3rdFragment extends Fragment {
             }
         });
 
-        // Cancelar registro y volver a login preguntando en un display alert
+        // Cancelar registro y volver a login_op_login_ic preguntando en un display alert
         evCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

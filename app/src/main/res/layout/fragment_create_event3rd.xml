@@ -35,7 +35,7 @@
         android:layout_height="300dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/event_icon" />
+        app:srcCompat="@drawable/default_event_ic" />
 
     <Button
         android:id="@+id/finishCreationButton"

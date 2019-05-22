@@ -5,4 +5,6 @@
     <color name="colorAccent">#36d1dc</color>
     <color name="Transparent">#33FFFFFF</color>
     <color name="TransparentSelected">#66FFFFFF</color>
+    <color name="TransparentHint">#66FFFFFF</color>
+    <color name="purpleTest">#5D00FF</color>
 </resources>

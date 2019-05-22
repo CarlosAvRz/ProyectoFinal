@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient"
+    android:background="@drawable/default_background_blue_gradient"
     android:orientation="vertical"
     android:gravity="center_vertical"
     tools:context=".LogInSignUpOptionsActivity">
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:background="@drawable/background_frost_button_selector"
+            android:background="@drawable/frost_button_selector"
             android:onClick="onTestUserPressed"
             android:orientation="vertical"
             android:paddingTop="20dp"
@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                app:srcCompat="@drawable/test_user" />
+                app:srcCompat="@drawable/login_op_test_ic" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:background="@drawable/background_frost_button_selector"
+            android:background="@drawable/frost_button_selector"
             android:onClick="onLogInPressed"
             android:orientation="vertical"
             android:paddingTop="20dp"
@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                app:srcCompat="@drawable/login" />
+                app:srcCompat="@drawable/login_op_login_ic" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -83,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:background="@drawable/background_frost_button_selector"
+            android:background="@drawable/frost_button_selector"
             android:onClick="onSignUpPressed"
             android:orientation="vertical"
             android:paddingTop="20dp"
@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                app:srcCompat="@drawable/signup" />
+                app:srcCompat="@drawable/login_op_register_ic" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -111,7 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:background="@drawable/background_frost_button_selector"
+            android:background="@drawable/frost_button_selector"
             android:onClick="onFacebookPressed"
             android:orientation="vertical"
             android:paddingTop="20dp"
@@ -124,7 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                app:srcCompat="@drawable/facebook" />
+                app:srcCompat="@drawable/login_op_facebook_ic" />
 
             <TextView
                 android:layout_width="match_parent"

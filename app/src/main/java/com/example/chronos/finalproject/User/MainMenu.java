@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -18,6 +20,8 @@ public class MainMenu extends AppCompatActivity {
 
     private static final String BACK_STACK_ROOT_TAG = "root_fragment";
     FragmentManager fragmentManager = getSupportFragmentManager();
+    ConstraintLayout mainLayout;
+    ConstraintSet includeBarConstraintSet, excludeBarConstraintSet;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -31,6 +35,7 @@ public class MainMenu extends AppCompatActivity {
                             .replace(R.id.placeHolderFrameLayout, new EventsMap())
                             .addToBackStack(BACK_STACK_ROOT_TAG)
                             .commit();
+                    //includeBarConstraintSet.applyTo(mainLayout);
                     return true;
                 case R.id.navigation_posts:
                     fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -38,6 +43,7 @@ public class MainMenu extends AppCompatActivity {
                             .replace(R.id.placeHolderFrameLayout, new PostsFragment())
                             .addToBackStack(BACK_STACK_ROOT_TAG)
                             .commit();
+                    //excludeBarConstraintSet.applyTo(mainLayout);
                     return true;
                 case R.id.navigation_profile:
                     fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -45,6 +51,7 @@ public class MainMenu extends AppCompatActivity {
                             .replace(R.id.placeHolderFrameLayout, new SelfProfile())
                             .addToBackStack(BACK_STACK_ROOT_TAG)
                             .commit();
+                    //excludeBarConstraintSet.applyTo(mainLayout);
                     return true;
             }
             return false;
@@ -59,6 +66,16 @@ public class MainMenu extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_events);
+
+        // Prepare constraints for changing size of container framelayout
+        mainLayout = findViewById(R.id.container);
+        includeBarConstraintSet = new ConstraintSet();
+        excludeBarConstraintSet = new ConstraintSet();
+
+        includeBarConstraintSet.clone(mainLayout);
+        excludeBarConstraintSet.clone(mainLayout);
+
+        excludeBarConstraintSet.connect(R.id.placeHolderFrameLayout,ConstraintSet.BOTTOM,R.id.navigation,ConstraintSet.TOP,0);
     }
 
     @Override
@@ -73,6 +90,7 @@ public class MainMenu extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             UserData.getInstance().cleanInstance();
                             Intent intent = new Intent(getApplicationContext(), LogInSignUpOptionsActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         }
                     })

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LogInActivity"
-    android:background="@drawable/background_gradient">
+    android:background="@drawable/default_background_blue_gradient">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -53,7 +53,7 @@
             android:id="@+id/logInButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_frost_button_selector"
+            android:background="@drawable/frost_button_selector"
             android:onClick="logInAccount"
             android:text="@string/log_in_text"
             android:textColor="@android:color/white" />

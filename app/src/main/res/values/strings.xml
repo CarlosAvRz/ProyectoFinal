@@ -20,6 +20,8 @@
     <string name="day_text">Dia</string>
     <string name="month_text">Mes</string>
     <string name="year_text">Año</string>
+    <string name="date_button_text">Cambiar</string>
+    <string name="date_text">Fecha de nacimiento</string>
     <string name="empty_error">Este campo no puede estar vacio</string>
     <string name="whitespace_eror">Este campo no puede comenzar o terminar con espacio</string>
     <string name="many_whitespace_error">No puede haber mas de un espacio entre palabras</string>
@@ -35,6 +37,7 @@
     <string name="email_alredy_exists_detail">Este correo ya está registrado, por favor utiliza otro o inicia sesión</string>
 
     <!-- Resources for Register2ndActivity -->
+    <string name="select_title">Selecciona tu imágen de perfil</string>
     <string name="select_profile_button">Seleccionar</string>
     <string name="cancel_register_button">Cancelar</string>
     <string name="finish_register_button">Terminar</string>

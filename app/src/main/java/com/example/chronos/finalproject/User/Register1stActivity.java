@@ -1,8 +1,10 @@
 package com.example.chronos.finalproject.User;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -11,12 +13,13 @@ import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.chronos.finalproject.Models.DatePickerFragment;
+import com.example.chronos.finalproject.Models.UXMethods;
 import com.example.chronos.finalproject.Models.UserExperienceMethods;
 import com.example.chronos.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
@@ -25,16 +28,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.Map;
-
-import static java.util.Arrays.asList;
 
 public class Register1stActivity extends AppCompatActivity {
 
-    Spinner daySpinner, monthSpinner, yearSpinner;
     EditText nameEditText, lastNameEditText, mLastNameEditText, emailEditText, passwordEditText;
-    TextView validNameTextView, validLastNameTextView, validmLastNameTextView, validEmailTextView, validPasswordTextView, validDateTextView;
+    TextView validNameTextView, validLastNameTextView, validmLastNameTextView, validEmailTextView, validPasswordTextView, validDateTextView, dateTextView;
 
     public int isValidName(EditText editText) {
         String text = editText.getText().toString();
@@ -60,27 +59,8 @@ public class Register1stActivity extends AppCompatActivity {
     }
 
     public boolean isValidDate() {
-        String day = daySpinner.getSelectedItem().toString();
-        String month = monthSpinner.getSelectedItem().toString();
-        String year = yearSpinner.getSelectedItem().toString();
-        ArrayList<String> months31 = new ArrayList<>(asList("1", "3", "5", "7", "8", "10", "12"));
-
-        if (day.equals("31") && !months31.contains(month)) {
-            return false;
-        }
-        if (day.equals("30") && month.equals("2")) {
-            return false;
-        }
-        if (day.equals("29") && month.equals("2")) {
-            if (Integer.valueOf(year) % 4 != 0) {
-                return false;
-            } else if (Integer.valueOf(year) % 100 == 0) {
-                if (Integer.valueOf(year) % 400 != 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        String dateText = dateTextView.getText().toString();
+        return !dateText.equals(getString(R.string.date_text));
     }
 
     public void continueRegister(View view) {
@@ -114,9 +94,9 @@ public class Register1stActivity extends AppCompatActivity {
                         intent.putExtra("mLastName", mLastNameEditText.getText().toString());
                         intent.putExtra("email", emailEditText.getText().toString());
                         intent.putExtra("password", passwordEditText.getText().toString());
-                        intent.putExtra("birthDay", daySpinner.getSelectedItem().toString());
-                        intent.putExtra("birthMonth", monthSpinner.getSelectedItem().toString());
-                        intent.putExtra("birthYear", yearSpinner.getSelectedItem().toString());
+                        //intent.putExtra("birthDay", daySpinner.getSelectedItem().toString());
+                        //intent.putExtra("birthMonth", monthSpinner.getSelectedItem().toString());
+                        //intent.putExtra("birthYear", yearSpinner.getSelectedItem().toString());
                         startActivity(intent);
                     }
                 }
@@ -147,17 +127,35 @@ public class Register1stActivity extends AppCompatActivity {
         }
     }
 
+    public void showDatePicker(View v) {
+        DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                // +1 because january is zero
+                final String selectedDate = day + " / " + (month + 1) + " / " + year;
+                dateTextView.setText(selectedDate);
+                dateTextView.setTextColor(ContextCompat.getColor(Register1stActivity.this, android.R.color.white));
+            }
+        });
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    public void registerFacebook(View v) {
+        Toast.makeText(this, "En desarrollo...", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        ev = UXMethods.dispatchTouchEvent(this, ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register1st);
 
         // Inicializar variables para comprobar mas adelante si los datos son correctos
-        // Spinner
-        daySpinner = findViewById(R.id.daySpinner);
-        monthSpinner = findViewById(R.id.monthSpinner);
-        yearSpinner = findViewById(R.id.yearSpinner);
-
         // EditText
         nameEditText = findViewById(R.id.nameEditText);
         lastNameEditText = findViewById(R.id.lastNameEditText);
@@ -166,25 +164,13 @@ public class Register1stActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
 
         // TextView
+        dateTextView = findViewById(R.id.dateTextView);
         validNameTextView = findViewById(R.id.validNameTextView);
         validLastNameTextView = findViewById(R.id.validLastNameTextView);
         validmLastNameTextView = findViewById(R.id.validmLastNameTextView);
         validEmailTextView = findViewById(R.id.validEmailTextView);
         validPasswordTextView = findViewById(R.id.validPasswordTextView);
         validDateTextView = findViewById(R.id.validDateTextView);
-
-        // Inicializar listas de numeros para poder mostrarlos en los spinner
-        Integer[] dayNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
-        Integer[] monthNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
-        Integer[] yearNumbers = new Integer[39];
-        for (int i = 0, year = 1980; i < yearNumbers.length; i++, year++) {
-            yearNumbers[i] = year;
-        }
-
-        // Unir las listas de numeros a los spinner
-        daySpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, dayNumbers));
-        monthSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, monthNumbers));
-        yearSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, yearNumbers));
 
         // FocusListener para validar campos
         // nameEditText
@@ -296,36 +282,5 @@ public class Register1stActivity extends AppCompatActivity {
                 }
             }
         });
-        // Spinners (solo OnItemSelected)
-        Spinner.OnItemSelectedListener spinnerOnItemSelectedListener = new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!isValidDate()) {
-                    validDateTextView.setText(getString(R.string.invalid_date));
-                } else {
-                    validDateTextView.setText("");
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        };
-        daySpinner.setOnItemSelectedListener(spinnerOnItemSelectedListener);
-        monthSpinner.setOnItemSelectedListener(spinnerOnItemSelectedListener);
-        yearSpinner.setOnItemSelectedListener(spinnerOnItemSelectedListener);
-
-        View.OnTouchListener keyboardOnTouchListener = new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                UserExperienceMethods.hideKeyboard(Register1stActivity.this);
-                v.performClick();
-                return true;
-            }
-        };
-        daySpinner.setOnTouchListener(keyboardOnTouchListener);
-        monthSpinner.setOnTouchListener(keyboardOnTouchListener);
-        yearSpinner.setOnTouchListener(keyboardOnTouchListener);
     }
 }

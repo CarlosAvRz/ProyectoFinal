@@ -85,7 +85,7 @@ public class Register2ndActivity extends AppCompatActivity {
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
-    // Cancelar registro y volver a login preguntando en un display alert
+    // Cancelar registro y volver a login_op_login_ic preguntando en un display alert
     public void cancelRegister(View view) {
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)

@@ -5,7 +5,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="hideKeyboard"
+    android:background="@drawable/default_background_blue_gradient"
     tools:context=".User.Register1stActivity">
 
     <LinearLayout
@@ -26,13 +26,15 @@
             android:digits="ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz "
             android:hint="@string/name_edit"
             android:inputType="textVisiblePassword"
-            android:maxLength="30" />
+            android:maxLength="30"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/TransparentHint"
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/validNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="hideKeyboard"
             android:textColor="@color/colorAccent"
             android:textSize="12sp" />
 
@@ -43,13 +45,15 @@
             android:digits="ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz "
             android:hint="@string/last_name_edit"
             android:inputType="textVisiblePassword"
-            android:maxLength="30" />
+            android:maxLength="30"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/TransparentHint"
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/validLastNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="hideKeyboard"
             android:textColor="@color/colorAccent"
             android:textSize="12sp" />
 
@@ -60,13 +64,15 @@
             android:digits="ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz "
             android:hint="@string/mothers_last_name_edit"
             android:inputType="textVisiblePassword"
-            android:maxLength="30" />
+            android:maxLength="30"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/TransparentHint"
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/validmLastNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="hideKeyboard"
             android:textColor="@color/colorAccent"
             android:textSize="12sp" />
 
@@ -76,19 +82,22 @@
             android:layout_height="wrap_content"
             android:hint="@string/email_edit"
             android:inputType="textVisiblePassword"
-            android:maxLength="255" />
+            android:maxLength="255"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/TransparentHint"
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/validEmailTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="hideKeyboard"
             android:textColor="@color/colorAccent"
             android:textSize="12sp" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColorHint="@color/TransparentHint"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/colorAccent">
 
@@ -99,14 +108,15 @@
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
                 android:hint="@string/password_edit"
                 android:inputType="textPassword"
-                android:maxLength="30" />
+                android:maxLength="30"
+                android:textColor="@android:color/white"
+                android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
         <TextView
             android:id="@+id/validPasswordTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="hideKeyboard"
             android:textColor="@color/colorAccent"
             android:textSize="12sp" />
 
@@ -114,70 +124,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:baselineAligned="false"
+            android:gravity="center"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/dateTextView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:text="@string/date_text"
+                android:textColor="@color/TransparentHint" />
 
-                <TextView
-                    android:id="@+id/dayTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:onClick="hideKeyboard"
-                    android:text="@string/day_text" />
-
-                <Spinner
-                    android:id="@+id/daySpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
+            <Button
+                android:id="@+id/pickDateButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/monthTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:onClick="hideKeyboard"
-                    android:text="@string/month_text" />
-
-                <Spinner
-                    android:id="@+id/monthSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/yearTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:onClick="hideKeyboard"
-                    android:text="@string/year_text" />
-
-                <Spinner
-                    android:id="@+id/yearSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                android:background="@drawable/frost_button_selector"
+                android:onClick="showDatePicker"
+                android:text="@string/date_button_text"
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
 
@@ -185,7 +152,6 @@
             android:id="@+id/validDateTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="hideKeyboard"
             android:textColor="@color/colorAccent"
             android:textSize="12sp" />
 
@@ -193,14 +159,20 @@
             android:id="@+id/nextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/frost_button_selector"
             android:onClick="continueRegister"
-            android:text="@string/next_button" />
+            android:text="@string/next_button"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/facebookButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/facebook_button" />
+            android:layout_marginTop="12dp"
+            android:background="@drawable/frost_button_selector"
+            android:onClick="registerFacebook"
+            android:text="@string/facebook_button"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 

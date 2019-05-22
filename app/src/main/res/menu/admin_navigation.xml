@@ -3,12 +3,12 @@
 
     <item
         android:id="@+id/navigation_new_events"
-        android:icon="@drawable/marker_icon_96"
+        android:icon="@drawable/admin_menu_events_ic_96"
         android:title="@string/title_admin_events" />
 
     <item
         android:id="@+id/navigation_show_reports"
-        android:icon="@drawable/alert_icon_96"
+        android:icon="@drawable/admin_menu_reports_ic"
         android:title="@string/title_admin_reports" />
 
 </menu>
