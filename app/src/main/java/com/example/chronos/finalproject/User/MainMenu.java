@@ -7,9 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.chronos.finalproject.LogInSignUpOptionsActivity;
@@ -23,59 +25,77 @@ public class MainMenu extends AppCompatActivity {
     ConstraintLayout mainLayout;
     ConstraintSet includeBarConstraintSet, excludeBarConstraintSet;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_events:
-                    fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.placeHolderFrameLayout, new EventsMap())
-                            .addToBackStack(BACK_STACK_ROOT_TAG)
-                            .commit();
-                    //includeBarConstraintSet.applyTo(mainLayout);
-                    return true;
-                case R.id.navigation_posts:
-                    fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.placeHolderFrameLayout, new PostsFragment())
-                            .addToBackStack(BACK_STACK_ROOT_TAG)
-                            .commit();
-                    //excludeBarConstraintSet.applyTo(mainLayout);
-                    return true;
-                case R.id.navigation_profile:
-                    fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.placeHolderFrameLayout, new SelfProfile())
-                            .addToBackStack(BACK_STACK_ROOT_TAG)
-                            .commit();
-                    //excludeBarConstraintSet.applyTo(mainLayout);
-                    return true;
-            }
-            return false;
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_events);
-
         // Prepare constraints for changing size of container framelayout
         mainLayout = findViewById(R.id.container);
         includeBarConstraintSet = new ConstraintSet();
         excludeBarConstraintSet = new ConstraintSet();
-
         includeBarConstraintSet.clone(mainLayout);
         excludeBarConstraintSet.clone(mainLayout);
-
         excludeBarConstraintSet.connect(R.id.placeHolderFrameLayout,ConstraintSet.BOTTOM,R.id.navigation,ConstraintSet.TOP,0);
+
+        // Prepare menu selection actions
+        final BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_events:
+                        fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.placeHolderFrameLayout, new EventsMap())
+                                .addToBackStack(BACK_STACK_ROOT_TAG)
+                                .commit();
+                        includeBarConstraintSet.applyTo(mainLayout);
+                        return true;
+                    case R.id.navigation_posts:
+                        fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.placeHolderFrameLayout, new PostsFragment())
+                                .addToBackStack(BACK_STACK_ROOT_TAG)
+                                .commit();
+                        excludeBarConstraintSet.applyTo(mainLayout);
+                        return true;
+                    case R.id.navigation_profile:
+                        fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.placeHolderFrameLayout, new SelfProfile())
+                                .addToBackStack(BACK_STACK_ROOT_TAG)
+                                .commit();
+                        excludeBarConstraintSet.applyTo(mainLayout);
+                        return true;
+                }
+                return false;
+            }
+        });
+        navigation.setSelectedItemId(R.id.navigation_events);
+        navigation.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
+            @Override
+            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.placeHolderFrameLayout);
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_events:
+                        if(!(currentFragment instanceof EventsMap)) {
+                            fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, 0);
+                        }
+                        break;
+                    case R.id.navigation_posts:
+                        if(!(currentFragment instanceof EventsMap)) {
+                            fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, 0);
+                        }
+                        break;
+                    case R.id.navigation_profile:
+                        if(!(currentFragment instanceof EventsMap)) {
+                            fragmentManager.popBackStack(BACK_STACK_ROOT_TAG, 0);
+                        }
+                        break;
+                }
+            }
+        });
     }
 
     @Override
