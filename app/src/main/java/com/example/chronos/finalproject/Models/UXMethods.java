@@ -66,8 +66,13 @@ public class UXMethods {
         overlay.clear();
     }
 
-    public static int dpToPx(int dp, Context context) {
+    public static int convertDensityPointsToPixels(int dp, Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    public static int convertPixelsToDensityPoints(float px, Context context){
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return Math.round(px / ((float) displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 }

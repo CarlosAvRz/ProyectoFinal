@@ -4,17 +4,18 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroupOverlay;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -89,8 +90,15 @@ public class EventsMap extends Fragment {
         final TextView dateEventTextView = detailsView.findViewById(R.id.dateEventTextView);
         final TextView quotaEventTextView = detailsView.findViewById(R.id.quotaEventTextView);
 
+        // Tamaño de pantalla para calcular tamaño de popup
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int pxScreenWidth = size.x;
+        int pxPopupMarginsWidth = UXMethods.convertDensityPointsToPixels(120, getContext());
+
         // Popup y elementos
-        final PopupWindow popupWindow = new PopupWindow(detailsView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final PopupWindow popupWindow = new PopupWindow(detailsView, pxScreenWidth - pxPopupMarginsWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         final Button showDetailsButton = detailsView.findViewById(R.id.showDetailsButton);
         final TextView quotaAvailableTextView = detailsView.findViewById(R.id.quotaAvailableTextView);
         root = (ViewGroup) getActivity().getWindow().getDecorView().getRootView();
@@ -110,7 +118,7 @@ public class EventsMap extends Fragment {
             @Override
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
-                int pixelsBottomPadding = UXMethods.dpToPx(60, getActivity());
+                int pixelsBottomPadding = UXMethods.convertDensityPointsToPixels(60, getActivity());
                 googleMap.setPadding(0, 0, 0, pixelsBottomPadding);
 
                 // Solicitar permisos
